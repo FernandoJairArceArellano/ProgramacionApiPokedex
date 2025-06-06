@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Pokémon Info</title>
+</head>
+
+<body>
+    <h1>Información del Pokémon</h1>
+
+    <div th:if="${pokemon != null}">
+        <p><strong>Nombre:</strong> <span th:text="${pokemon.name}"></span></p>
+        <p><strong>Altura:</strong> <span th:text="${pokemon.height}"></span></p>
+        <p><strong>Peso:</strong> <span th:text="${pokemon.weight}"></span></p>
+    </div>
+
+    <div th:if="${error != null}">
+        <p style="color:red" th:text="${error}"></p>
+    </div>
+
+    <form action="/pokemon" method="get">
+        <input type="text" name="name" placeholder="Nombre del Pokémon" />
+        <button type="submit">Buscar</button>
+    </form>
+</body>
+
+</html>

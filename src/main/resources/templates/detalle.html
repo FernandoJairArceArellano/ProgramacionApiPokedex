@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultra.net.nz/thyemeleaf/layout"
+    layout:decorate=~{layout}>
+
+<head>
+    <title>Pokédex</title>
+</head>
+
+<body layout:fragment="body">
+    <div class="container mt-5">
+        <a href="/" class="btn btn-secondary mb-3">← Volver a la Pokédex</a>
+
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontDefault}" alt="Imagen Pokémon">
+                <h2 class="text-capitalize" th:text="${pokemon.name}">Nombre</h2>
+                <h5 class="text-muted">#<span th:text="${pokemon.id}">001</span></h5>
+
+                <div class="mt-3">
+                    <h6>Tipo:</h6>
+                    <span th:each="t : ${pokemon.types}" class="badge bg-primary type-badge"
+                        th:text="${t.type.name}">tipo</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .pokemon-img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .type-badge {
+            margin: 0 5px;
+            text-transform: capitalize;
+        }
+    </style>
+</body>
+
+</html>

@@ -4,64 +4,181 @@
 
 <head>
     <title>Pokédex</title>
-</head>
-
-<body layout:fragment="body">
-    <div class="container mt-5">
-
-        <h1 class="text-center mb-4">Pokédex</h1>
-
-        <div class="container p-3 ">
-            <div class="display flex">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/404px-International_Pok%C3%A9mon_logo.svg.png"
-                    alt="pokedex" class="img-fluid" width="200" height="300">
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="row g-3">
-                <div class="col-md-4" th:each="pokemon : ${pokemons}">
-                    <div class="card h-100 shadow-sm text-center">
-                        <div class="card-body">
-                            <img class="pokemon-img mb-3"
-                                th:src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + ${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon/', '').replace('/', '')} + '.png'"
-                                alt="Imagen de Pokémon">
-
-                            <!-- Mostrar el número del Pokémon -->
-                            <div class="pokemon-id">
-                                #
-                                <span
-                                    th:text="${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon/', '').replace('/', '')}">001</span>
-                            </div>
-
-                            <!-- Mostrar el nombre capitalizado -->
-                            <h5 class="card-title text-capitalize mt-1" th:text="${pokemon.name}">Nombre</h5>
-
-                            <!-- Botón de detalles -->
-                            <a th:href="@{'/pokemon/' + ${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon/', '').replace('/', '')}}"
-                                class="btn btn-outline-primary btn-sm mt-2">
-                                Ver Detalles
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
     <style>
         .pokemon-img {
             width: 120px;
             height: 120px;
             object-fit: contain;
+            display: block;
+            margin: 0 auto;
         }
 
         .pokemon-id {
             font-size: 0.9rem;
-            color: #888;
+            color: #ced4da;
+        }
+
+        .logo-container {
+            background: linear-gradient(to right, #ffcb05, #3b4cca);
+            border-radius: 1rem;
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            flex-direction: row;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .logo-img {
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .versus {
+            font-size: 4rem;
+            color: white;
+        }
+
+        .gen-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .gen-button {
+            background-color: #1e1e2f;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: 2px solid transparent;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .gen-button:hover {
+            background-color: #3b4cca;
+            /* Azul PokeAPI */
+            color: #fff;
+            transform: scale(1.05);
+            border-color: #ffcb05;
+            /* Amarillo Pokémon */
+        }
+
+        .active-gen {
+            background-color: #3b4cca;
+            border-color: #ffcb05;
+            transform: scale(1.05);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            /* 3 columnas fijas */
+            gap: 30px 53px;
+            margin: 30px 0px 0px;
+        }
+
+        .card {
+            background-color: #212529 !important;
+            /* Fondo oscuro */
+            border-color: #495057 !important;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        @media (max-width: 768px) {
+            .logo-container {
+                padding: 1rem;
+                flex-direction: row;
+            }
+
+            .logo-img {
+                height: 60px;
+            }
+
+            .versus {
+                font-size: 2rem;
+            }
+
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
+</head>
+
+<body layout:fragment="body" class="bg-dark text-white">
+    <div class="container mt-4">
+
+        <!-- Header tipo colaboración -->
+        <div class="logo-container shadow">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/404px-International_Pok%C3%A9mon_logo.svg.png"
+                alt="Pokémon Logo" class="logo-img">
+            <div class="versus">
+                <i class="bi bi-lightning-charge-fill"></i>
+            </div>
+            <img src="https://dka575ofm4ao0.cloudfront.net/pages-transactional_logos/retina/284377/pokeapi_1024.png"
+                alt="PokeAPI Logo" class="logo-img">
+        </div>
+
+        <!-- Generaciones -->
+
+        <div class="gen-buttons">
+            <a th:href="@{/pokedex/generation/1}" th:classappend="${activeGen == 1} ? ' active-gen' : ''"
+                class="gen-button">Gen I</a>
+            <a href="/pokedex/generation/2" class="gen-button">Gen II</a>
+            <a href="/pokedex/generation/3" class="gen-button">Gen III</a>
+            <a href="/pokedex/generation/4" class="gen-button">Gen IV</a>
+            <a href="/pokedex/generation/5" class="gen-button">Gen V</a>
+            <a href="/pokedex/generation/6" class="gen-button">Gen VI</a>
+            <a href="/pokedex/generation/7" class="gen-button">Gen VII</a>
+            <a href="/pokedex/generation/8" class="gen-button">Gen VIII</a>
+            <a href="/pokedex/generation/9" class="gen-button">Gen IX</a>
+        </div>
+
+        <!-- Pokédex Cards con Grid -->
+        <div class="card-grid">
+            <div th:each="pokemon : ${pokemons}">
+                <div class="card h-100 shadow-sm text-center text-white border-secondary">
+                    <div class="card-body">
+                        <img class="pokemon-img mb-1"
+                            th:src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + ${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon/', '').replace('/', '')} + '.png'"
+                            alt="Imagen de Pokémon">
+
+                        <div class="pokemon-id">
+                            #
+                            <span
+                                th:text="${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon/', '').replace('/', '')}">001</span>
+                        </div>
+
+                        <h5 class="card-title text-capitalize mt-1" th:text="${pokemon.name}">Nombre</h5>
+
+                        <a th:href="@{'/pokemon/' + ${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon/', '').replace('/', '')}}"
+                            class="btn btn-outline-light btn-sm mt-2">
+                            Ver Detalles
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

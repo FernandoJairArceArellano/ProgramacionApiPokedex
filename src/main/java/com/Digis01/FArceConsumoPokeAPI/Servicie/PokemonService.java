@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 public class PokemonService {
 
     // variable que representa un cliente HTTP reutilizable, que será asignado una sola vez
-    private final String POKEAPI_URL = "https://pokeapi.co/api/v2/pokemon?limit=1025";
+    private final String POKEAPI_URL = "https://pokeapi.co/api/v2/pokemon?limit=151";
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 

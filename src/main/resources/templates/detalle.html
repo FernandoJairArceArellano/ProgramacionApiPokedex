@@ -68,30 +68,16 @@
         </div>
     </div>
 
-    <!-- Evoluciones -->
+    <!-- Evoluciones reales -->
     <div class="container mt-5">
         <h1>Evoluciones</h1>
         <div class="row row-cols-2 row-cols-lg-5 g-2">
-            <div class="col">
+            <div class="col" th:each="evolucion : ${evoluciones}">
                 <div class="card shadow-sm">
                     <div class="card-body text-center">
-                        <h2 class="text-capitalize">Media</h2>
+                        <h2 class="text-capitalize" th:text="${evolucion.nombre}">Nombre</h2>
                         <div class="row justify-content-center">
-                            <span>Forma natural</span>
-                            <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontDefault}"
-                                alt="Imagen Pokémon por deafault">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <h2 class="text-capitalize">Superior</h2>
-                        <div class="row justify-content-center">
-                            <span>Forma natural</span>
-                            <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontDefault}"
-                                alt="Imagen Pokémon por deafault">
+                            <img class="pokemon-img mb-3" th:src="${evolucion.imagen}" alt="Imagen evolución" />
                         </div>
                     </div>
                 </div>

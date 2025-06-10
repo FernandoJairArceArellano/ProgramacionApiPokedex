@@ -79,13 +79,13 @@
             transform: scale(1.05);
         }
 
-        .card-grid {
+        /* .card-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            /* 3 columnas fijas */
+            3 columnas fijas
             gap: 30px 53px;
             margin: 30px 0px 0px;
-        }
+        } */
 
         .card {
             background-color: #212529 !important;
@@ -96,6 +96,25 @@
         .card:hover {
             transform: scale(1.03);
         }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+
+        .pokemon-card {
+            transition: all 0.3s ease;
+        }
+
+        .pokeball-btn img {
+            transition: transform 0.5s ease;
+        }
+
+        .pokeball-btn:hover img {
+            transform: rotate(360deg);
+        }
+
 
         @media (max-width: 768px) {
             .logo-container {
@@ -140,22 +159,21 @@
 
         <!-- Generaciones -->
 
-        <div class="gen-buttons">
-            <a th:href="@{/pokedex/generation/1}" th:classappend="${activeGen == 1} ? ' active-gen' : ''"
-                class="gen-button">Gen I</a>
-            <a href="/pokedex/generation/2" class="gen-button">Gen II</a>
-            <a href="/pokedex/generation/3" class="gen-button">Gen III</a>
-            <a href="/pokedex/generation/4" class="gen-button">Gen IV</a>
-            <a href="/pokedex/generation/5" class="gen-button">Gen V</a>
-            <a href="/pokedex/generation/6" class="gen-button">Gen VI</a>
-            <a href="/pokedex/generation/7" class="gen-button">Gen VII</a>
-            <a href="/pokedex/generation/8" class="gen-button">Gen VIII</a>
-            <a href="/pokedex/generation/9" class="gen-button">Gen IX</a>
+        <div class="gen-buttons mb-3">
+            <button onclick="filtrarGeneracion(1, 151)" class="gen-button">Gen I</button>
+            <button onclick="filtrarGeneracion(152, 251)" class="gen-button">Gen II</button>
+            <button onclick="filtrarGeneracion(252, 386)" class="gen-button">Gen III</button>
+            <button onclick="filtrarGeneracion(387, 493)" class="gen-button">Gen IV</button>
+            <button onclick="filtrarGeneracion(494, 649)" class="gen-button">Gen V</button>
+            <button onclick="filtrarGeneracion(650, 721)" class="gen-button">Gen VI</button>
+            <button onclick="filtrarGeneracion(722, 809)" class="gen-button">Gen VII</button>
+            <button onclick="filtrarGeneracion(810, 905)" class="gen-button">Gen VIII</button>
+            <button onclick="filtrarGeneracion(906, 1025)" class="gen-button">Gen IX</button>
         </div>
 
         <!-- Pokédex Cards con Grid -->
-        <div class="card-grid">
-            <div th:each="pokemon : ${pokemons}">
+        <div class="card-grid" id="pokemon-container">
+            <div th:each="pokemon : ${pokemons}" class="pokemon-card">
                 <div class="card h-100 shadow-sm text-center text-white border-secondary">
                     <div class="card-body">
                         <img class="pokemon-img mb-1"
@@ -164,21 +182,75 @@
 
                         <div class="pokemon-id">
                             #
-                            <span
+                            <span class="poke-id"
                                 th:text="${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon/', '').replace('/', '')}">001</span>
                         </div>
 
                         <h5 class="card-title text-capitalize mt-1" th:text="${pokemon.name}">Nombre</h5>
 
+                        <!-- Pokébola -->
                         <a th:href="@{'/pokedex/pokemon/' + ${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon/', '').replace('/', '')}}"
-                            class="btn btn-outline-light btn-sm mt-2">
-                            Ver Detalles
+                            class="btn btn-outline-light btn-sm mt-2 pokeball-btn">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Pok%C3%A9_Ball_icon.svg/512px-Pok%C3%A9_Ball_icon.svg.png"
+                                alt="Ver Detalles" width="24" height="24">
                         </a>
                     </div>
                 </div>
             </div>
         </div>
+
+
+        <!-- <div th:fragment="pokemonList">
+            <div th:each="pokemon : ${pokemons}" class="card h-100 shadow-sm text-center text-white border-secondary">
+                <div class="card-body">
+                    <img class="pokemon-img mb-1"
+                        th:src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + ${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon-species/', '').replace('/', '')} + '.png'"
+                        alt="Imagen de Pokémon">
+
+                    <div class="pokemon-id">
+                        #
+                        <span
+                            th:text="${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon-species/', '').replace('/', '')}">001</span>
+                    </div>
+
+                    <h5 class="card-title text-capitalize mt-1" th:text="${pokemon.name}">Nombre</h5>
+
+                    <a th:href="@{'/pokedex/pokemon/' + ${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon-species/', '').replace('/', '')}}"
+                        class="btn btn-outline-light btn-sm mt-2">
+                        Ver Detalles
+                    </a>
+                </div>
+            </div>
+        </div> -->
+
     </div>
+
+    <script>
+        function filtrarGeneracion(min, max) {
+            const cards = document.querySelectorAll('.pokemon-card');
+
+            cards.forEach(card => {
+                const idSpan = card.querySelector('.poke-id');
+                if (!idSpan) return;
+
+                const id = parseInt(idSpan.textContent.trim());
+                if (id >= min && id <= max) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Opcional: scroll hacia arriba
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mostrar Gen I al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            filtrarGeneracion(1, 151);
+        });
+    </script>
+
 </body>
 
 </html>

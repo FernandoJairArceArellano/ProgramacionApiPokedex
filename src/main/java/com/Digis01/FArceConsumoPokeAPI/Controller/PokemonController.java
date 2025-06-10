@@ -1,7 +1,9 @@
 package com.Digis01.FArceConsumoPokeAPI.Controller;
 
 import com.Digis01.FArceConsumoPokeAPI.DAO.PokemonService;
+import com.Digis01.FArceConsumoPokeAPI.ML.PokemonEvolucion;
 import com.Digis01.FArceConsumoPokeAPI.ML.Pokemon;
+import com.Digis01.FArceConsumoPokeAPI.ML.PokemonSpecies;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,12 +95,22 @@ public class PokemonController {
         return "indexold";
     }
 
+    @GetMapping("/pokedex/generation/{id}")
+    public String getPokemonsByGeneration(@PathVariable int id, Model model) {
+        List<PokemonSpecies> pokemons = pokemonService.getPokemonsByGen(id);
+        model.addAttribute("pokemons", pokemons);
+        return "fragments/pokemon-cards :: pokemonList";
+    }
+
     @GetMapping("/pokemon/{id}")
     public String getPokemonDetail(@PathVariable String id, Model model) {
         /*
             Obtener toda la informacion del pokemon a ver en especifico
          */
         Pokemon detail = pokemonService.getPokemonDetail(id);
+
+        List<PokemonEvolucion> evoluciones = pokemonService.getEvoluciones(id);
+
         detail.getSprites().getFrontDefault();
         detail.getSprites().getFrontShiny();
         detail.getSprites().getOther().getShowdown().getFrontDefault();
@@ -107,6 +119,7 @@ public class PokemonController {
         detail.getBaseExperience();
         detail.getTypes().get(0).getType().getName();
         model.addAttribute("pokemon", detail);
+        model.addAttribute("evoluciones", evoluciones);
         return "detalle";
     }
 

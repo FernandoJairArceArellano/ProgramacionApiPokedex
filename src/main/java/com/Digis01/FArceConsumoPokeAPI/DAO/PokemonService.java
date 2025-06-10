@@ -1,13 +1,19 @@
 package com.Digis01.FArceConsumoPokeAPI.DAO;
 
+import com.Digis01.FArceConsumoPokeAPI.ML.EvolutionChainResponse;
+import com.Digis01.FArceConsumoPokeAPI.ML.GenerationResponse;
 import com.Digis01.FArceConsumoPokeAPI.ML.PokemonListResponse;
 import com.Digis01.FArceConsumoPokeAPI.ML.Pokemon;
 import com.Digis01.FArceConsumoPokeAPI.ML.PokemonDetail;
+import com.Digis01.FArceConsumoPokeAPI.ML.PokemonEvolucion;
 import com.Digis01.FArceConsumoPokeAPI.ML.PokemonResponse;
+import com.Digis01.FArceConsumoPokeAPI.ML.PokemonSpecies;
 import com.Digis01.FArceConsumoPokeAPI.ML.TypeData;
 import com.Digis01.FArceConsumoPokeAPI.ML.TypeSlot;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,6 +47,61 @@ public class PokemonService {
 
     public PokemonResponse getAllPokemons() {
         return restTemplate.getForObject("https://pokeapi.co/api/v2/pokemon?limit=1025", PokemonResponse.class);
+    }
+
+    public List<PokemonEvolucion> getEvoluciones(String idOrName) {
+        String speciesUrl = "https://pokeapi.co/api/v2/pokemon-species/" + idOrName;
+        PokemonSpecies species = restTemplate.getForObject(speciesUrl, PokemonSpecies.class);
+        String evoChainUrl = species.getEvolution_chain().getUrl();
+
+        EvolutionChainResponse chainResponse = restTemplate.getForObject(evoChainUrl, EvolutionChainResponse.class);
+        List<PokemonEvolucion> evoluciones = new ArrayList<>();
+
+        // Recorrer desde el nodo raíz para encontrar la rama que incluye al Pokémon actual
+        buscarEvolucionesDesde(chainResponse.getChain(), idOrName.toLowerCase(), evoluciones);
+
+        return evoluciones;
+    }
+
+    private boolean buscarEvolucionesDesde(EvolutionChainResponse.Chain node, String targetName, List<PokemonEvolucion> result) {
+        String name = node.getSpecies().getName();
+        if (name.equalsIgnoreCase(targetName)) {
+            // Ya estamos en el nodo del Pokémon actual, agregarlo y sus siguientes evoluciones
+            agregarNodoYEvoluciones(node, result);
+            return true;
+        }
+        // Buscar recursivamente en children
+        for (EvolutionChainResponse.Chain next : node.getEvolves_to()) {
+            if (buscarEvolucionesDesde(next, targetName, result)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void agregarNodoYEvoluciones(EvolutionChainResponse.Chain node, List<PokemonEvolucion> result) {
+        String nombre = node.getSpecies().getName();
+        String url = "https://pokeapi.co/api/v2/pokemon/" + nombre;
+        Pokemon p = restTemplate.getForObject(url, Pokemon.class);
+        result.add(new PokemonEvolucion(nombre, p.getSprites().getFrontDefault()));
+
+        for (EvolutionChainResponse.Chain next : node.getEvolves_to()) {
+            agregarNodoYEvoluciones(next, result);
+        }
+    }
+
+    public List<PokemonSpecies> getPokemonsByGen(int genId) {
+        String url = "https://pokeapi.co/api/v2/generation/" + genId;
+        GenerationResponse response = restTemplate.getForObject(url, GenerationResponse.class);
+
+        // Ordenamiento por ID ascendente
+        return response.getPokemon_species().stream()
+                .sorted(Comparator.comparingInt(species -> {
+                    String[] parts = species.getUrl().split("/");
+                    return Integer.parseInt(parts[parts.length - 1]);
+                }))
+                .collect(Collectors.toList());
+
     }
 
     public List<Pokemon> getPokemonsByGeneration(int gen) {
@@ -117,10 +178,10 @@ public class PokemonService {
     public Pokemon getPokemonDetail(String idOrName) {
         String url = "https://pokeapi.co/api/v2/pokemon/" + idOrName;
         Pokemon pokemonDetail = restTemplate.getForObject(url, Pokemon.class);
-        
+
         agregarIconosTipos(pokemonDetail);
-        
+
         return pokemonDetail;
-        
+
     }
 }

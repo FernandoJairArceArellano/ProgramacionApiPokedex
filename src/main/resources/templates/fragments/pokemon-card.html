@@ -1,0 +1,22 @@
+<div th:fragment="pokemonList">
+    <div th:each="pokemon : ${pokemons}" class="card h-100 shadow-sm text-center text-white border-secondary">
+        <div class="card-body">
+            <img class="pokemon-img mb-1"
+                th:src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + ${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon-species/', '').replace('/', '')} + '.png'"
+                alt="Imagen de Pokémon">
+
+            <div class="pokemon-id">
+                #
+                <span
+                    th:text="${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon-species/', '').replace('/', '')}">001</span>
+            </div>
+
+            <h5 class="card-title text-capitalize mt-1" th:text="${pokemon.name}">Nombre</h5>
+
+            <a th:href="@{'/pokedex/pokemon/' + ${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon-species/', '').replace('/', '')}}"
+                class="btn btn-outline-light btn-sm mt-2">
+                Ver Detalles
+            </a>
+        </div>
+    </div>
+</div>

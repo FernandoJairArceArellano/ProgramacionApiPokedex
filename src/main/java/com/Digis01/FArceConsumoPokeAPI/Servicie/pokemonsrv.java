@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class PokemonService {
+public class pokemonsrv {
 
     // variable que representa un cliente HTTP reutilizable, que será asignado una sola vez
     private final String POKEAPI_URL = "https://pokeapi.co/api/v2/pokemon?limit=151";

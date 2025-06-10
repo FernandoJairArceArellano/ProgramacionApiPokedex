@@ -16,12 +16,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
-<nav class="navbar navbar-expand-md sticky-top navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
     <div class="container-fluid">
         <!-- Marca -->
-        <a class="navbar-brand" th:href="@{/}"><img
+        <a class="navbar-brand" th:href="@{/pokedex/index}"><img
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Pok%C3%A9_Ball_icon.svg/512px-Pok%C3%A9_Ball_icon.svg.png"
                 alt="pokedex" class="img-fluid" width="50" height="50"></a>
+        
+                <a class="navbar-brand" th:href="@{/pokedex/todos}"><img
+                src="https://static.wikia.nocookie.net/pokemonreloaded/images/5/5e/Super_Ball_%28Dream_World%29.png/revision/latest?cb=20180712143254&path-prefix=es"
+                alt="pokedex-old" class="img-fluid" width="50" height="50"></a>
 
         <!-- Botón hamburguesa -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -36,31 +40,40 @@
                     <a class="nav-link" th:href="@{/}">Inicio</a>
                 </li> -->
                 <li class="nav-item">
-                    <a class="nav-link">Gen I</a>
+                    <a class="nav-link" th:href="@{/pokedex/generation/1}"
+                        th:classappend="${activeGen == 1} ? ' active-gen' : ''">Gen I</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link">Gen II</a>
+                    <a class="nav-link" th:href="@{/pokedex/generation/2}"
+                        th:classappend="${activeGen == 2} ? ' active-gen' : ''">Gen II</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link">Gen III</a>
+                    <a class="nav-link" th:href="@{/pokedex/generation/3}"
+                        th:classappend="${activeGen == 3} ? ' active-gen' : ''">Gen III</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link">Gen IV</a>
+                    <a class="nav-link" th:href="@{/pokedex/generation/4}"
+                        th:classappend="${activeGen == 4} ? ' active-gen' : ''">Gen IV</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link">Gen V</a>
+                    <a class="nav-link" th:href="@{/pokedex/generation/5}"
+                        th:classappend="${activeGen == 5} ? ' active-gen' : ''">Gen V</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link">Gen VI</a>
+                    <a class="nav-link" th:href="@{/pokedex/generation/6}"
+                        th:classappend="${activeGen == 6} ? ' active-gen' : ''">Gen VI</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link">Gen VII</a>
+                    <a class="nav-link" th:href="@{/pokedex/generation/7}"
+                        th:classappend="${activeGen == 7} ? ' active-gen' : ''">Gen VII</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link">Gen VIII</a>
+                    <a class="nav-link" th:href="@{/pokedex/generation/8}"
+                        th:classappend="${activeGen == 8} ? ' active-gen' : ''">Gen VIII</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link">Gen IX</a>
+                    <a class="nav-link" th:href="@{/pokedex/generation/9}"
+                        th:classappend="${activeGen == 9} ? ' active-gen' : ''">Gen IX</a>
                 </li>
             </ul>
         </div>

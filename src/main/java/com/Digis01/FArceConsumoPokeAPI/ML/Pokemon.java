@@ -1,31 +1,24 @@
 package com.Digis01.FArceConsumoPokeAPI.ML;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 
 public class Pokemon {
+
     private int id;
     private String name;
-    private int height;
-    private int weight;
-    
     @JsonProperty("base_experience")
     private int baseExperience;
 
-    public int getHeight() {
-        return height;
-    }
+    private int height;
+    private int weight;
 
-    public void setHeight(int height) {
-        this.height = height;
-    }
-    
-    public String getName(){
-        return name;
-    }
-    
-    public void setName(String name){
-        this.name = name;
-    }
+    @JsonProperty("is_default")
+    private boolean isDefault;
+
+    private Sprites sprites;
+
+    private List<TypeSlot> types;
 
     public int getId() {
         return id;
@@ -33,6 +26,30 @@ public class Pokemon {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getBaseExperience() {
+        return baseExperience;
+    }
+
+    public void setBaseExperience(int baseExperience) {
+        this.baseExperience = baseExperience;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public int getWeight() {
@@ -43,13 +60,28 @@ public class Pokemon {
         this.weight = weight;
     }
 
-    public int getBaseExperience() {
-        return baseExperience;
+    public boolean isIsDefault() {
+        return isDefault;
     }
 
-    public void setBaseExperience(int baseExperience) {
-        this.baseExperience = baseExperience;
+    public void setIsDefault(boolean isDefault) {
+        this.isDefault = isDefault;
     }
-    
-    
+
+    public Sprites getSprites() {
+        return sprites;
+    }
+
+    public void setSprites(Sprites sprites) {
+        this.sprites = sprites;
+    }
+
+    public List<TypeSlot> getTypes() {
+        return types;
+    }
+
+    public void setTypes(List<TypeSlot> types) {
+        this.types = types;
+    }
+
 }

@@ -1,6 +1,5 @@
-package com.Digis01.FArceProgramacionConsumoPokeAPI.DAO;
+package com.Digis01.FArceConsumoPokeAPI.ML;
 
-import com.Digis01.FArceProgramacionConsumoPokeAPI.ML.PokemonListResult;
 import java.util.List;
 
 public class PokemonListResponse {

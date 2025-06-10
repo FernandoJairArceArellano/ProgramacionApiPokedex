@@ -1,4 +1,4 @@
-package com.Digis01.FArceProgramacionConsumoPokeAPI.ML;
+package com.Digis01.FArceConsumoPokeAPI.ML;
 
 public class PokemonListResult {
     private String name;

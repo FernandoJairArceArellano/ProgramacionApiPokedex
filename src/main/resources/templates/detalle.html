@@ -8,18 +8,111 @@
 
 <body layout:fragment="body">
     <div class="container mt-5">
-        <a href="/" class="btn btn-secondary mb-3">← Volver a la Pokédex</a>
+        <a href="/pokedex/todos" class="btn btn-secondary mb-3">← Volver a la Pokédex</a>
 
         <div class="card shadow-sm">
             <div class="card-body text-center">
-                <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontDefault}" alt="Imagen Pokémon">
                 <h2 class="text-capitalize" th:text="${pokemon.name}">Nombre</h2>
+                <div class="container">
+                    <div class="row row-cols-2">
+                        <div class="row justify-content-center">
+                            <span>Forma natural</span>
+                            <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontDefault}"
+                                alt="Imagen Pokémon por deafault">
+                        </div>
+                        <div class="row justify-content-center">
+                            <span>Forma Shiny</span>
+                            <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontShiny}"
+                                alt="Imagen Pokémon Shiny">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Animacion del pokemon -->
+                <div class="container">
+                    <div class="row row-cols-2">
+                        <div class="row justify-content-center">
+                            <span>Forma natural</span>
+                            <img class="pokemon-shiny-img mb-3" th:src="${pokemon.sprites.other.showdown.frontDefault}"
+                                alt="Imagen Pokémon por deafault">
+                        </div>
+                        <div class="row justify-content-center">
+                            <span>Forma Shiny</span>
+                            <img class="pokemon-shiny-img mb-3" th:src="${pokemon.sprites.other.showdown.frontShiny}"
+                                alt="Imagen Pokémon Shiny">
+                        </div>
+                    </div>
+                </div>
                 <h5 class="text-muted">#<span th:text="${pokemon.id}">001</span></h5>
 
+                <img th:if="${isDefault == false}"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Pok%C3%A9_Ball_icon.svg/512px-Pok%C3%A9_Ball_icon.svg.png"
+                    alt="Es inicial" width="50px" height="50px">
+
                 <div class="mt-3">
-                    <h6>Tipo:</h6>
-                    <span th:each="t : ${pokemon.types}" class="badge bg-primary type-badge"
-                        th:text="${t.type.name}">tipo</span>
+                    <h4>Experiencia por victoria
+                        <span th:text="${pokemon.baseExperience}"></span>
+                    </h4>
+
+                    <!-- Tipos del pokemon -->
+                    <span th:text="${pokemon.types.size() > 1 ? 'Tipos:' : 'Tipo:'}"></span>
+                    <br><br>
+                    <!-- <span th:each="t : ${pokemon.types}" class="badge bg-primary type-badge"
+                        th:text="${t.type.name}">tipo</span> -->
+
+                    <span th:each="typeSlot : ${pokemon.types}" class="badge bg-secondary me-1">
+                        <img th:src="${typeSlot.typeIconUrl}" style="height: 20px;" alt="icono tipo" />
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Evoluciones -->
+    <div class="container mt-5">
+        <h1>Evoluciones</h1>
+        <div class="row row-cols-2 row-cols-lg-5 g-2">
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h2 class="text-capitalize">Media</h2>
+                        <div class="row justify-content-center">
+                            <span>Forma natural</span>
+                            <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontDefault}"
+                                alt="Imagen Pokémon por deafault">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h2 class="text-capitalize">Superior</h2>
+                        <div class="row justify-content-center">
+                            <span>Forma natural</span>
+                            <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontDefault}"
+                                alt="Imagen Pokémon por deafault">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mega evolucones -->
+    <div class="container mt-5">
+        <h1>Mega evoluciones</h1>
+        <div class="row row-cols-2 row-cols-lg-5 g-2">
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h2 class="text-capitalize">Mega evolucion</h2>
+                        <div class="row justify-content-center">
+                            <span>Forma natural</span>
+                            <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontDefault}"
+                                alt="Imagen Pokémon por deafault">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -27,6 +120,12 @@
 
     <style>
         .pokemon-img {
+            width: 300px;
+            height: 300px;
+            object-fit: contain;
+        }
+
+        .pokemon-shiny-img {
             width: 200px;
             height: 200px;
             object-fit: contain;

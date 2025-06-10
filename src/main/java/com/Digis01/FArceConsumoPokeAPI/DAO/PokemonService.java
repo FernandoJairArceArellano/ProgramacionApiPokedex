@@ -1,8 +1,11 @@
-package com.Digis01.FArceProgramacionConsumoPokeAPI.DAO;
+package com.Digis01.FArceConsumoPokeAPI.DAO;
 
-import com.Digis01.FArceProgramacionConsumoPokeAPI.ML.Pokemon;
-import com.Digis01.FArceProgramacionConsumoPokeAPI.ML.TypeData;
-import com.Digis01.FArceProgramacionConsumoPokeAPI.ML.TypeSlot;
+import com.Digis01.FArceConsumoPokeAPI.ML.PokemonListResponse;
+import com.Digis01.FArceConsumoPokeAPI.ML.Pokemon;
+import com.Digis01.FArceConsumoPokeAPI.ML.PokemonDetail;
+import com.Digis01.FArceConsumoPokeAPI.ML.PokemonResponse;
+import com.Digis01.FArceConsumoPokeAPI.ML.TypeData;
+import com.Digis01.FArceConsumoPokeAPI.ML.TypeSlot;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -34,6 +37,10 @@ public class PokemonService {
         }
 
         return pokemons;
+    }
+
+    public PokemonResponse getAllPokemons() {
+        return restTemplate.getForObject("https://pokeapi.co/api/v2/pokemon?limit=1025", PokemonResponse.class);
     }
 
     public List<Pokemon> getPokemonsByGeneration(int gen) {
@@ -105,5 +112,15 @@ public class PokemonService {
                 }
             }
         }
+    }
+
+    public Pokemon getPokemonDetail(String idOrName) {
+        String url = "https://pokeapi.co/api/v2/pokemon/" + idOrName;
+        Pokemon pokemonDetail = restTemplate.getForObject(url, Pokemon.class);
+        
+        agregarIconosTipos(pokemonDetail);
+        
+        return pokemonDetail;
+        
     }
 }

@@ -35,10 +35,7 @@ public class PokemonController {
     }
 
     @GetMapping({"", "/", "/generation/{gen}"})
-    public String pokedex(
-            @PathVariable(required = false) Integer gen,
-            Model model
-    ) {
+    public String pokedex(@PathVariable(required = false) Integer gen, Model model) {
         /*
             Mala implementacion de las generaciones
          */

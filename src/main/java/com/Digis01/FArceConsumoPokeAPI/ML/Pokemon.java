@@ -19,6 +19,8 @@ public class Pokemon {
     private Sprites sprites;
 
     private List<TypeSlot> types;
+    
+    private List<StatSlot> stats;
 
     public int getId() {
         return id;

@@ -157,6 +157,9 @@ public class PokemonService {
         return restTemplate.getForObject(url, TypeData.class);
     }
 
+    /*
+        Datos del pokemon y envio de datos al pokemon
+     */
     private void agregarIconosTipos(Pokemon pokemon) {
         if (pokemon.getTypes() != null) {
             for (TypeSlot typeSlot : pokemon.getTypes()) {
@@ -175,6 +178,10 @@ public class PokemonService {
         }
     }
 
+    private void agregarEstadisticas(Pokemon pokemon){
+        
+    }
+    
     public Pokemon getPokemonDetail(String idOrName) {
         String url = "https://pokeapi.co/api/v2/pokemon/" + idOrName;
         Pokemon pokemonDetail = restTemplate.getForObject(url, Pokemon.class);
@@ -184,4 +191,5 @@ public class PokemonService {
         return pokemonDetail;
 
     }
+
 }

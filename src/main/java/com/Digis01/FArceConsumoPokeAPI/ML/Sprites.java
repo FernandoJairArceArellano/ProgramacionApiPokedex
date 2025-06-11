@@ -10,6 +10,9 @@ public class Sprites {
     @JsonProperty("front_shiny")
     private String frontShiny;
 
+    @JsonProperty("default")
+    private String spritesdefault;
+
     private Versions versions;
 
     private Generation generation;
@@ -30,6 +33,14 @@ public class Sprites {
 
     public void setFrontShiny(String frontShiny) {
         this.frontShiny = frontShiny;
+    }
+
+    public String getSpritesdefault() {
+        return spritesdefault;
+    }
+
+    public void setSpritesdefault(String spritesdefault) {
+        this.spritesdefault = spritesdefault;
     }
 
     public Versions getVersions() {

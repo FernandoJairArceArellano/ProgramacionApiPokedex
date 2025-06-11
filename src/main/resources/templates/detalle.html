@@ -5,18 +5,8 @@
 <head>
     <title>Pokédex</title>
     <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-radar.min.js"></script>
-
-    <style type="text/css">
-        html,
-        body,
-        #container {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-    </style>
 </head>
 
 <body layout:fragment="body">
@@ -82,105 +72,28 @@
     </div>
 
     <!-- Estadisticas -->
-    <!-- <div class="container mt-5">
+    <div class="container mt-5">
         <div class="card shadow-sm">
             <div class="card-body text-center">
                 <div class="container">
-                    Todas las estadisticas del pokemon
+                    <h3>Estadísticas:</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item" th:each="stat : ${pokemon.stats}">
+                            <span th:text="${stat.stat.name}">Nombre Stat</span>:
+                            <strong th:text="${stat.baseStat}">Valor</strong>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </div> -->
-
-    <div class="container">
     </div>
-    <div id="container" style="width: 500px; height: 400px; margin-top: 3rem !important;">
+
+    <!-- Gráfico de Radar -->
+    <div class="d-flex justify-content-center">
+        <canvas id="radarChart" style="max-width: 600px; max-height: 600px;"></canvas>
     </div>
-    <script>
 
-        anychart.onDocumentReady(function () {
-
-            // create a data set
-            var chartData = {
-                header: ['#', 'Estadisticas del pokemon'],
-                rows: [
-                    ['hp', 45],
-                    ['attack', 49],
-                    ['defense', 49],
-                    ['special-attack', 65],
-                    ['special-defense', 65],
-                    ['speed', 45]
-                ]
-            };
-
-            // create a radar chart
-            var chart = anychart.radar();
-
-            // set the series type
-            chart.defaultSeriesType('area');
-
-            // set the chart data
-            chart.data(chartData);
-
-            // set the color palette
-            chart.palette(['#9BC53DE6', '#E5593499', '#64B5F6BF']);
-
-            // configure the appearance of the y-axis
-            chart.yAxis().stroke('#545f69');
-            chart.yAxis().ticks().stroke('#545f69');
-
-            // configure the stroke of the x-grid
-            chart.xGrid().stroke({
-                color: "#545f69",
-                thickness: 0.5,
-                dash: "10 5"
-            });
-
-            // configure the appearance of the y-grid
-            chart.yGrid().palette(['gray 0.05', 'gray 0.025']);
-
-            // begin the y-scale at 0
-            chart.yScale().minimum(0);
-
-            // set the y-scale ticks interval
-            chart.yScale().ticks().interval(10);
-
-            // set the hover mode
-            chart.interactivity().hoverMode('by-x');
-
-            //  set the marker type
-            chart.markerPalette(['star5']);
-
-            // improve the tooltip
-            chart.tooltip()
-                .displayMode('union')
-                .useHtml(true)
-                .format(function (e) {
-                    console.log(this);
-                    return '<span style="color:' + this.series.color() + '">' +
-                        this.seriesName + ": " + this.value + "</span>"
-                });
-
-            // set chart legend settings
-            chart.legend()
-                .align('center')
-                .position('center-bottom')
-                .enabled(true);
-
-            // set the chart title
-            chart.title("Estadisticas base");
-
-            // set container id for the chart
-            chart.container('container');
-
-            // initiate chart drawing
-            chart.draw();
-
-        });
-
-    </script>
-
-    <!-- Evoluciones reales -->
+    <!-- Evoluciones -->
     <div class="container mt-5">
         <h1>Evoluciones</h1>
         <div class="row row-cols-2 row-cols-lg-5 g-2">
@@ -188,35 +101,83 @@
                 <div class="card shadow-sm">
                     <div class="card-body text-center">
                         <h2 class="text-capitalize" th:text="${evolucion.nombre}">Nombre</h2>
-                        <div class="row justify-content-center">
-                            <img class="pokemon-img mb-3" th:src="${evolucion.imagen}" alt="Imagen evolución" />
-                        </div>
+                        <img class="pokemon-img mb-3" th:src="${evolucion.imagen}" alt="Imagen evolución" />
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Mega evolucones -->
+    <!-- Mega Evoluciones -->
     <div class="container mt-5">
-        <h1>Mega evoluciones</h1>
+        <h1>Mega Evoluciones</h1>
         <div class="row row-cols-2 row-cols-lg-5 g-2">
-            <div class="col">
+            <div class="col" th:each="mega : ${megas}">
                 <div class="card shadow-sm">
                     <div class="card-body text-center">
-                        <h2 class="text-capitalize">Mega evolucion</h2>
-                        <div class="row justify-content-center">
-                            <span>Forma natural</span>
-                            <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontDefault}"
-                                alt="Imagen Pokémon por deafault">
-                        </div>
+                        <h2 class="text-capitalize" th:text="${mega.nombre}">Nombre</h2>
+                        <img class="pokemon-img mb-3" th:src="${mega.imagen}" alt="Mega evolución" />
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script th:inline="javascript">
+        /* Construir array labels */
+        const labels = [
+        /*[# th:each="stat : ${pokemon.stats}" ]*/
+            /*[[${stat.stat.name}]]*/'',
+            /*[/]*/
+        ].filter(label => label !== '');
 
+        /* Construir array dataValues */
+        const dataValues = [
+        /*[# th:each="stat : ${pokemon.stats}" ]*/
+            /*[[${stat.baseStat}]]*/0,
+            /*[/]*/
+        ];
+
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'Stats de ' + /*[[${pokemon.name}]]*/,
+                data: dataValues,
+                fill: true,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgb(54, 162, 235)',
+                pointBackgroundColor: 'rgb(54, 162, 235)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(54, 162, 235)'
+            }]
+        };
+
+        const config = {
+            type: 'radar',
+            data: data,
+            options: {
+                scales: {
+                    r: {
+                        beginAtZero: true
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Radar de estadísticas Pokémon'
+                    }
+                }
+            },
+        };
+
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        new Chart(ctx, config);
+    </script>
 
     <style>
         .pokemon-img {

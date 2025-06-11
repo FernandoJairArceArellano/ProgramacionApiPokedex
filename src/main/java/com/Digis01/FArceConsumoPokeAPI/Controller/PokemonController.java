@@ -94,8 +94,8 @@ public class PokemonController {
 
     @GetMapping("/pokedex/generation/{id}")
     public String getPokemonsByGeneration(@PathVariable int id, Model model) {
-        List<PokemonSpecies> pokemons = pokemonService.getPokemonsByGen(id);
-        model.addAttribute("pokemons", pokemons);
+//        List<PokemonSpecies> pokemons = pokemonService.getPokemonsByGen(id);
+//        model.addAttribute("pokemons", pokemons);
         return "fragments/pokemon-cards :: pokemonList";
     }
 
@@ -107,6 +107,7 @@ public class PokemonController {
         Pokemon detail = pokemonService.getPokemonDetail(id);
 
         List<PokemonEvolucion> evoluciones = pokemonService.getEvoluciones(id);
+        List<PokemonEvolucion> megaEvoluciones = pokemonService.getMegaEvoluciones(id);
 
         detail.getSprites().getFrontDefault();
         detail.getSprites().getFrontShiny();
@@ -117,6 +118,7 @@ public class PokemonController {
         detail.getTypes().get(0).getType().getName();
         model.addAttribute("pokemon", detail);
         model.addAttribute("evoluciones", evoluciones);
+        model.addAttribute("megas", megaEvoluciones);
         return "detalle";
     }
 

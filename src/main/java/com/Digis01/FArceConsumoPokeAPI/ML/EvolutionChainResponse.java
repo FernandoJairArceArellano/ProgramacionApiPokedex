@@ -19,7 +19,6 @@ public class EvolutionChainResponse {
         private Species species;
         private List<Chain> evolves_to;
 
-        // Getters y Setters
         public Species getSpecies() {
             return species;
         }
@@ -40,9 +39,7 @@ public class EvolutionChainResponse {
     public static class Species {
 
         private String name;
-        private String url;
 
-        // Getters y Setters
         public String getName() {
             return name;
         }
@@ -50,14 +47,5 @@ public class EvolutionChainResponse {
         public void setName(String name) {
             this.name = name;
         }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
     }
 }

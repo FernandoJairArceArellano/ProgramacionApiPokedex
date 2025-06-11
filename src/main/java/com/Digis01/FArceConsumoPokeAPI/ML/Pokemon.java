@@ -19,8 +19,10 @@ public class Pokemon {
     private Sprites sprites;
 
     private List<TypeSlot> types;
-    
-    private List<StatSlot> stats;
+
+    private List<Form> forms;
+
+    private List<Stat> stats;
 
     public int getId() {
         return id;
@@ -84,6 +86,22 @@ public class Pokemon {
 
     public void setTypes(List<TypeSlot> types) {
         this.types = types;
+    }
+
+    public List<Form> getForms() {
+        return forms;
+    }
+
+    public void setForms(List<Form> forms) {
+        this.forms = forms;
+    }
+
+    public List<Stat> getStats() {
+        return stats;
+    }
+
+    public void setStats(List<Stat> stats) {
+        this.stats = stats;
     }
 
 }

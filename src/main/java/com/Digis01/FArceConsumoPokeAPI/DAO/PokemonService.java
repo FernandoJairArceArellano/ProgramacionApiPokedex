@@ -1,6 +1,7 @@
 package com.Digis01.FArceConsumoPokeAPI.DAO;
 
 import com.Digis01.FArceConsumoPokeAPI.ML.EvolutionChainResponse;
+import com.Digis01.FArceConsumoPokeAPI.ML.Form;
 import com.Digis01.FArceConsumoPokeAPI.ML.GenerationResponse;
 import com.Digis01.FArceConsumoPokeAPI.ML.PokemonListResponse;
 import com.Digis01.FArceConsumoPokeAPI.ML.Pokemon;
@@ -11,6 +12,7 @@ import com.Digis01.FArceConsumoPokeAPI.ML.PokemonSpecies;
 import com.Digis01.FArceConsumoPokeAPI.ML.TypeData;
 import com.Digis01.FArceConsumoPokeAPI.ML.TypeSlot;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,61 +51,19 @@ public class PokemonService {
         return restTemplate.getForObject("https://pokeapi.co/api/v2/pokemon?limit=1025", PokemonResponse.class);
     }
 
-    public List<PokemonEvolucion> getEvoluciones(String idOrName) {
-        String speciesUrl = "https://pokeapi.co/api/v2/pokemon-species/" + idOrName;
-        PokemonSpecies species = restTemplate.getForObject(speciesUrl, PokemonSpecies.class);
-        String evoChainUrl = species.getEvolution_chain().getUrl();
-
-        EvolutionChainResponse chainResponse = restTemplate.getForObject(evoChainUrl, EvolutionChainResponse.class);
-        List<PokemonEvolucion> evoluciones = new ArrayList<>();
-
-        // Recorrer desde el nodo raíz para encontrar la rama que incluye al Pokémon actual
-        buscarEvolucionesDesde(chainResponse.getChain(), idOrName.toLowerCase(), evoluciones);
-
-        return evoluciones;
-    }
-
-    private boolean buscarEvolucionesDesde(EvolutionChainResponse.Chain node, String targetName, List<PokemonEvolucion> result) {
-        String name = node.getSpecies().getName();
-        if (name.equalsIgnoreCase(targetName)) {
-            // Ya estamos en el nodo del Pokémon actual, agregarlo y sus siguientes evoluciones
-            agregarNodoYEvoluciones(node, result);
-            return true;
-        }
-        // Buscar recursivamente en children
-        for (EvolutionChainResponse.Chain next : node.getEvolves_to()) {
-            if (buscarEvolucionesDesde(next, targetName, result)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void agregarNodoYEvoluciones(EvolutionChainResponse.Chain node, List<PokemonEvolucion> result) {
-        String nombre = node.getSpecies().getName();
-        String url = "https://pokeapi.co/api/v2/pokemon/" + nombre;
-        Pokemon p = restTemplate.getForObject(url, Pokemon.class);
-        result.add(new PokemonEvolucion(nombre, p.getSprites().getFrontDefault()));
-
-        for (EvolutionChainResponse.Chain next : node.getEvolves_to()) {
-            agregarNodoYEvoluciones(next, result);
-        }
-    }
-
-    public List<PokemonSpecies> getPokemonsByGen(int genId) {
-        String url = "https://pokeapi.co/api/v2/generation/" + genId;
-        GenerationResponse response = restTemplate.getForObject(url, GenerationResponse.class);
-
-        // Ordenamiento por ID ascendente
-        return response.getPokemon_species().stream()
-                .sorted(Comparator.comparingInt(species -> {
-                    String[] parts = species.getUrl().split("/");
-                    return Integer.parseInt(parts[parts.length - 1]);
-                }))
-                .collect(Collectors.toList());
-
-    }
-
+//    public List<PokemonSpecies> getPokemonsByGen(int genId) {
+//        String url = "https://pokeapi.co/api/v2/generation/" + genId;
+//        GenerationResponse response = restTemplate.getForObject(url, GenerationResponse.class);
+//
+//        // Ordenamiento por ID ascendente
+//        return response.getPokemon_species().stream()
+//                .sorted(Comparator.comparingInt(species -> {
+//                    String[] parts = species.getUrl().split("/");
+//                    return Integer.parseInt(parts[parts.length - 1]);
+//                }))
+//                .collect(Collectors.toList());
+//
+//    }
     public List<Pokemon> getPokemonsByGeneration(int gen) {
         int start = 1, end = 151;
 
@@ -157,9 +117,6 @@ public class PokemonService {
         return restTemplate.getForObject(url, TypeData.class);
     }
 
-    /*
-        Datos del pokemon y envio de datos al pokemon
-     */
     private void agregarIconosTipos(Pokemon pokemon) {
         if (pokemon.getTypes() != null) {
             for (TypeSlot typeSlot : pokemon.getTypes()) {
@@ -178,10 +135,6 @@ public class PokemonService {
         }
     }
 
-    private void agregarEstadisticas(Pokemon pokemon){
-        
-    }
-    
     public Pokemon getPokemonDetail(String idOrName) {
         String url = "https://pokeapi.co/api/v2/pokemon/" + idOrName;
         Pokemon pokemonDetail = restTemplate.getForObject(url, Pokemon.class);
@@ -190,6 +143,76 @@ public class PokemonService {
 
         return pokemonDetail;
 
+    }
+
+    public List<PokemonEvolucion> getEvoluciones(String idOrName) {
+        String speciesUrl = "https://pokeapi.co/api/v2/pokemon-species/" + idOrName.toLowerCase();
+        PokemonSpecies species = restTemplate.getForObject(speciesUrl, PokemonSpecies.class);
+
+        if (species == null || species.getEvolution_chain() == null) {
+            return Collections.emptyList();
+        }
+
+        String evoChainUrl = species.getEvolution_chain().getUrl();
+        EvolutionChainResponse chainResponse = restTemplate.getForObject(evoChainUrl, EvolutionChainResponse.class);
+        List<PokemonEvolucion> evoluciones = new ArrayList<>();
+
+        boolean encontrado = buscarEvolucionesDesde(chainResponse.getChain(), idOrName.toLowerCase(), evoluciones);
+
+        // Si no lo encuentra en la cadena, devolvemos la cadena completa
+        if (!encontrado) {
+            agregarNodoYEvoluciones(chainResponse.getChain(), evoluciones);
+        }
+
+        return evoluciones;
+    }
+
+    private boolean buscarEvolucionesDesde(EvolutionChainResponse.Chain node, String targetName, List<PokemonEvolucion> result) {
+        String name = node.getSpecies().getName();
+
+        if (name.equalsIgnoreCase(targetName)) {
+            agregarNodoYEvoluciones(node, result);
+            return true;
+        }
+
+        for (EvolutionChainResponse.Chain next : node.getEvolves_to()) {
+            if (buscarEvolucionesDesde(next, targetName, result)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void agregarNodoYEvoluciones(EvolutionChainResponse.Chain node, List<PokemonEvolucion> result) {
+        String nombre = node.getSpecies().getName();
+        String url = "https://pokeapi.co/api/v2/pokemon/" + nombre;
+        Pokemon p = restTemplate.getForObject(url, Pokemon.class);
+        result.add(new PokemonEvolucion(nombre, p.getSprites().getFrontDefault()));
+
+        for (EvolutionChainResponse.Chain next : node.getEvolves_to()) {
+            agregarNodoYEvoluciones(next, result);
+        }
+    }
+
+    public List<PokemonEvolucion> getMegaEvoluciones(String idOrName) {
+        String url = "https://pokeapi.co/api/v2/pokemon/" + idOrName.toLowerCase();
+        Pokemon pokemon = restTemplate.getForObject(url, Pokemon.class);
+
+        if (pokemon == null || pokemon.getForms() == null || pokemon.getForms().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<PokemonEvolucion> megaEvoluciones = new ArrayList<>();
+
+        for (Form form : pokemon.getForms()) {
+            if (form.getName().contains("mega")) {
+                String formUrl = form.getUrl();
+                Pokemon formDetail = restTemplate.getForObject(formUrl, Pokemon.class);
+                megaEvoluciones.add(new PokemonEvolucion(form.getName(), formDetail.getSprites().getFrontDefault()));
+            }
+        }
+
+        return megaEvoluciones;
     }
 
 }

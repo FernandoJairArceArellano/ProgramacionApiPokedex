@@ -14,7 +14,41 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* From Uiverse.io by Bodyhc */
+        .search {
+            display: inline-block;
+            position: relative;
+        }
 
+        .search input[type="text"] {
+            width: 200px;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search button[type="submit"] {
+            background-color: #4e99e9;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 0;
+            right: 0;
+            transition: .9s ease;
+        }
+
+        .search button[type="submit"]:hover {
+            transform: scale(1.1);
+            color: rgb(255, 255, 255);
+            background-color: blue;
+        }
+    </style>
 </head>
 <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
     <div class="container-fluid">
@@ -26,6 +60,12 @@
         <a class="navbar-brand" th:href="@{/pokedex/todos}"><img
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Pok%C3%A9_Ball_icon.svg/512px-Pok%C3%A9_Ball_icon.svg.png"
                 alt="pokedex-old" class="img-fluid" width="50" height="50"></a>
+
+        <!-- From Uiverse.io by Bodyhc -->
+        <div class="search">
+            <input placeholder="Search..." type="text">
+            <button type="submit">Buscar</button>
+        </div>
 
         <!-- Botón hamburguesa -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"

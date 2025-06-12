@@ -4,9 +4,9 @@
 
 <head>
     <title>Pokédex</title>
-    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-core.min.js"></script>
+    <!-- <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-core.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-radar.min.js"></script>
+    <!-- <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-radar.min.js"></script> -->
 </head>
 
 <body layout:fragment="body">
@@ -24,7 +24,7 @@
                                 alt="Imagen Pokémon por deafault">
                         </div>
                         <div class="row justify-content-center">
-                            <span>Forma Shiny</span>
+                            <span class="loading-text">Forma Shiny</span>
                             <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontShiny}"
                                 alt="Imagen Pokémon Shiny">
                         </div>
@@ -40,7 +40,7 @@
                                 alt="Imagen Pokémon por deafault">
                         </div>
                         <div class="row justify-content-center">
-                            <span>Forma Shiny</span>
+                            <span class="loading-text">Forma Shiny</span>
                             <img class="pokemon-shiny-img mb-3" th:src="${pokemon.sprites.other.showdown.frontShiny}"
                                 alt="Imagen Pokémon Shiny">
                         </div>
@@ -66,6 +66,12 @@
                     <span th:each="typeSlot : ${pokemon.types}" class="badge bg-secondary me-1">
                         <img th:src="${typeSlot.typeIconUrl}" style="height: 20px;" alt="icono tipo" />
                     </span>
+
+                    <br><br>
+                    <span>
+                        Movimientos
+
+                    </span>
                 </div>
             </div>
         </div>
@@ -84,23 +90,30 @@
                         </li>
                     </ul>
                 </div>
+                <div class="container">
+                    <!-- Gráfico de Radar -->
+                    <div class="d-flex justify-content-center">
+                        <canvas id="radarChart" style="max-width: 600px; max-height: 600px;"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Gráfico de Radar -->
-    <div class="d-flex justify-content-center">
-        <canvas id="radarChart" style="max-width: 600px; max-height: 600px;"></canvas>
-    </div>
 
     <!-- Evoluciones -->
     <div class="container mt-5">
-        <h1>Evoluciones</h1>
-        <div class="row row-cols-2 row-cols-lg-5 g-2">
+        <div class="wrapper">
+            <div class="bg"> Evoluciones </div>
+            <div class="fg"> Evoluciones </div>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="row">
             <div class="col" th:each="evolucion : ${evoluciones}">
                 <div class="card shadow-sm">
                     <div class="card-body text-center">
-                        <h2 class="text-capitalize" th:text="${evolucion.nombre}">Nombre</h2>
+                        <h2 class="text-link" th:text="${evolucion.nombre}">Nombre</h2>
                         <img class="pokemon-img mb-3" th:src="${evolucion.imagen}" alt="Imagen evolución" />
                     </div>
                 </div>
@@ -110,7 +123,12 @@
 
     <!-- Mega Evoluciones -->
     <div class="container mt-5">
-        <h1>Mega Evoluciones</h1>
+        <div class="wrapper">
+            <div class="bg"> Mega Evoluciones </div>
+            <div class="fg"> Mega Evoluciones </div>
+        </div>
+    </div>
+    <div class="container mt-5">
         <div class="row row-cols-2 row-cols-lg-5 g-2">
             <div class="col" th:each="mega : ${megas}">
                 <div class="card shadow-sm">
@@ -144,12 +162,12 @@
                 label: 'Stats de ' + /*[[${pokemon.name}]]*/,
                 data: dataValues,
                 fill: true,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgb(54, 162, 235)',
-                pointBackgroundColor: 'rgb(54, 162, 235)',
+                backgroundColor: 'rgba(254, 141, 81, 0.3)',
+                borderColor: 'rgb(243, 88, 5)',
+                pointBackgroundColor: 'rgb(243, 88, 5)',
                 pointBorderColor: '#fff',
                 pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgb(54, 162, 235)'
+                pointHoverBorderColor: 'rgb(243, 88, 5)'
             }]
         };
 
@@ -184,6 +202,11 @@
             width: 300px;
             height: 300px;
             object-fit: contain;
+
+            color: transparent;
+            filter: drop-shadow(5px 15px 15px black);
+            transform: scaleY(1.05);
+            transform-origin: top;
         }
 
         .pokemon-shiny-img {
@@ -195,6 +218,75 @@
         .type-badge {
             margin: 0 5px;
             text-transform: capitalize;
+        }
+
+        .loading-text {
+            place-self: center;
+            background: linear-gradient(90deg, #326dfa, #ff8a00, #fabf32)-100%/ 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+
+            color: transparent;
+            font: 900 clamp(2em, 10vw, 10em) exo, sans-serif;
+            font-size: 250%;
+            animation: shimer 2s linear infinite;
+        }
+
+        @keyframes shimer {
+            to {
+                background-position: 100%;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #ffb338;
+            --light-shadow: #77571d;
+            --dark-shadow: #3e2904;
+        }
+
+        .wrapper {
+            /* background: radial-gradient(#272727, #1b1b1b); */
+            display: grid;
+            grid-template-areas: 'overlap';
+            place-content: center;
+            text-transform: uppercase;
+            /* height: 30vh; */
+        }
+
+        .wrapper>div {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: #363833;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: clamp(3em, 18vw, 3rem);
+            grid-area: overlap;
+            letter-spacing: 1px;
+            -webkit-text-stroke: 4px transparent;
+        }
+
+        div.bg {
+            background-image: repeating-linear-gradient(105deg,
+                    var(--gold) 0%,
+                    var(--dark-shadow) 5%,
+                    var(--gold) 12%);
+            color: transparent;
+            filter: drop-shadow(5px 15px 15px black);
+            transform: scaleY(1.05);
+            transform-origin: top;
+        }
+
+        div.fg {
+            background-image: repeating-linear-gradient(5deg,
+                    var(--gold) 0%,
+                    var(--light-shadow) 23%,
+                    var(--gold) 31%);
+            color: #1e2127;
+            transform: scale(1);
         }
     </style>
 </body>

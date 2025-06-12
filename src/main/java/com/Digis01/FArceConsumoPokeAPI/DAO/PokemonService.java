@@ -64,6 +64,7 @@ public class PokemonService {
 //                .collect(Collectors.toList());
 //
 //    }
+    
     public List<Pokemon> getPokemonsByGeneration(int gen) {
         int start = 1, end = 151;
 

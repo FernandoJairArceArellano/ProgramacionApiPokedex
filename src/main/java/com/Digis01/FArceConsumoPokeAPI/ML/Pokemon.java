@@ -20,11 +20,13 @@ public class Pokemon {
 
     private List<TypeSlot> types;
 
-    private List<MovesListResult> moves;
+    private List<MoveSlot> moves;
 
     private List<Form> forms;
 
     private List<Stat> stats;
+
+    private PokemonDetail pokemonDetail;
 
     public int getId() {
         return id;
@@ -90,12 +92,12 @@ public class Pokemon {
         this.types = types;
     }
 
-    public List<MovesListResult> getMovesListResults() {
+    public List<MoveSlot> getMoves() {
         return moves;
     }
 
-    public void setMovesListResults(List<MovesListResult> movesListResults) {
-        this.moves = movesListResults;
+    public void setMoves(List<MoveSlot> moves) {
+        this.moves = moves;
     }
 
     public List<Form> getForms() {
@@ -112,6 +114,18 @@ public class Pokemon {
 
     public void setStats(List<Stat> stats) {
         this.stats = stats;
+    }
+
+    public PokemonDetail getPokemonDetail() {
+        return pokemonDetail;
+    }
+
+    public void setPokemonDetail(PokemonDetail pokemonDetail) {
+        this.pokemonDetail = pokemonDetail;
+    }
+
+    public void setColor(PokemonColor color) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

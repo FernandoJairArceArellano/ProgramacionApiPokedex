@@ -3,6 +3,8 @@ package com.Digis01.FArceConsumoPokeAPI.DAO;
 import com.Digis01.FArceConsumoPokeAPI.ML.EvolutionChainResponse;
 import com.Digis01.FArceConsumoPokeAPI.ML.Form;
 import com.Digis01.FArceConsumoPokeAPI.ML.GenerationResponse;
+import com.Digis01.FArceConsumoPokeAPI.ML.MoveData;
+import com.Digis01.FArceConsumoPokeAPI.ML.MoveSlot;
 import com.Digis01.FArceConsumoPokeAPI.ML.PokemonListResponse;
 import com.Digis01.FArceConsumoPokeAPI.ML.Pokemon;
 import com.Digis01.FArceConsumoPokeAPI.ML.PokemonDetail;
@@ -147,12 +149,43 @@ public class PokemonService {
         }
     }
 
+    public MoveData getMoveData(String moveName) {
+        String url = "https://pokeapi.co/api/v2/move/" + moveName.toLowerCase();
+        return restTemplate.getForObject(url, MoveData.class);
+    }
+
+    private void agregarDetallesMovimientos(Pokemon pokemon) {
+        if (pokemon.getMoves() != null) {
+            for (MoveSlot moveSlot : pokemon.getMoves()) {
+                try {
+                    MoveData moveData = getMoveData(moveSlot.getMove().getName());
+                    moveSlot.setMoveData(moveData); // Vamos a crear este campo en MoveSlot
+                } catch (Exception e) {
+                    // Si falla, no agregamos nada
+                }
+            }
+        }
+    }
+
+    public PokemonSpecies getPokemonSpecies(String idOrName) {
+        String url = "https://pokeapi.co/api/v2/pokemon-species/" + idOrName;
+        return restTemplate.getForObject(url, PokemonSpecies.class);
+    }
+
     public Pokemon getPokemonDetail(String idOrName) {
         String url = "https://pokeapi.co/api/v2/pokemon/" + idOrName;
         Pokemon pokemonDetail = restTemplate.getForObject(url, Pokemon.class);
 
         agregarIconosTipos(pokemonDetail);
+        agregarDetallesMovimientos(pokemonDetail);
 
+//        PokemonSpecies species = getPokemonSpecies(idOrName);
+//        pokemonDetail.set
+//        String speciesUrl = "https://pokeapi.co/api/v2/pokemon-species/" + idOrName;
+//        PokemonSpecies species = restTemplate.getForObject(speciesUrl, PokemonSpecies.class);
+//
+//        pokemonDetail.setColor(species.getColor());
+        
         return pokemonDetail;
 
     }

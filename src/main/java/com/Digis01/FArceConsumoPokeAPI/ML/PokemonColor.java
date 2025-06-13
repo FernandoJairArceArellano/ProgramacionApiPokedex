@@ -1,6 +1,6 @@
 package com.Digis01.FArceConsumoPokeAPI.ML;
 
-public class Move {
+public class PokemonColor {
 
     private String name;
     private String url;
@@ -17,7 +17,7 @@ public class Move {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void getUrl(String url) {
         this.url = url;
     }
 

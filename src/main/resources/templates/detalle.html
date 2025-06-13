@@ -69,8 +69,21 @@
 
                     <br><br>
                     <span>
-                        Movimientos
+                        <h3>Movimientos:</h3>
+                        <ul>
+                            <li th:each="moveSlot : ${pokemon.moves}">
+                                <strong th:text="${moveSlot.move.name}">Movimiento</strong> -
+                                <span th:text="${moveSlot.moveData.type.name}">Tipo</span> -
+                                Poder: <span th:text="${moveSlot.moveData.power}">Power</span> -
+                                Precisión: <span th:text="${moveSlot.moveData.accuracy}">Accuracy</span> -
+                                PP: <span th:text="${moveSlot.moveData.pp}">PP</span>
+                            </li>
+                        </ul>
+                    </span>
 
+                    <span>
+                        <!-- <h3>Color del Pokémon:</h3>
+                        <p th:text="${pokemon.color.name}">Color</p> -->
                     </span>
                 </div>
             </div>

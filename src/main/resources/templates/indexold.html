@@ -209,9 +209,9 @@
 
 <body layout:fragment="body" class="bg-dark text-white">
 
-    <div class="container mt-4" id="section">
+    <div class="container-fluid mt-4">
 
-        <div class="logo-container shadow">
+        <div class="logo-container shadow text-center mb-4">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/404px-International_Pok%C3%A9mon_logo.svg.png"
                 alt="Pokémon Logo" class="logo-img">
             <div class="versus">
@@ -238,9 +238,7 @@
             <span th:text="${mensajeError}"></span>
         </div>
 
-
-
-        <div class="gen-buttons mb-3">
+        <div class="gen-buttons mb-3 text-center">
             <button onclick="filtrarGeneracion(1, 151)" class="gen-button">Gen I</button>
             <button onclick="filtrarGeneracion(152, 251)" class="gen-button">Gen II</button>
             <button onclick="filtrarGeneracion(252, 386)" class="gen-button">Gen III</button>
@@ -252,7 +250,7 @@
             <button onclick="filtrarGeneracion(906, 1025)" class="gen-button">Gen IX</button>
         </div>
 
-        <div class="card-grid" id="pokemon-container">
+        <div class="row row-cols-1 row-cols-md-6 g-4" id="pokemon-container">
             <div th:each="pokemon : ${pokemons}" class="pokemon-card">
                 <div class="card h-100 shadow-sm text-center text-white border-secondary">
                     <div class="card-body">
@@ -310,8 +308,6 @@
             filtrarGeneracion(1, 151);
         });
     </script>
-    <section>
-    </section>
 
 </body>
 

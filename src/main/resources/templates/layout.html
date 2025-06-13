@@ -1,21 +1,50 @@
 <!DOCTYPE html>
-<html xmlns="http://www.thymeleaf.org" xmlns:layout="http://wwww.ultraq.net.nz/thymeleaf/layout" lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
-    <title>PokeAPI</title>
+    <title layout:title-pattern="$CONTENT_TITLE - Pokedex">Pokedex</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
-        /* From Uiverse.io by Bodyhc */
+        body {
+            display: flex;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            background-color: #15181F;
+            min-width: 220px;
+            max-width: 220px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            z-index: 1030;
+        }
+
+        .main-content {
+            margin-left: 220px;
+            width: calc(100% - 220px);
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .navbar {
+            z-index: 1040;
+        }
+
+        .content-inner {
+            padding: 1rem;
+        }
+
         .search {
             display: inline-block;
             position: relative;
@@ -51,131 +80,169 @@
     </style>
 </head>
 
-<nav class="navbar navbar-expand-lg sticky-top navbar-dark" style="background-color: #1F232D;">
-    <div class="container-fluid">
+<body>
 
-        <a class="navbar-brand" th:href="@{/pokedex/index}"><img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Pok%C3%A9_Ball_icon.svg/512px-Pok%C3%A9_Ball_icon.svg.png"
-                alt="pokedex" class="img-fluid" width="50" height="50"></a>
-
-        <a class="navbar-brand" th:href="@{/pokedex/todos}"><img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Pok%C3%A9_Ball_icon.svg/512px-Pok%C3%A9_Ball_icon.svg.png"
-                alt="pokedex-old" class="img-fluid" width="50" height="50"></a>
-
-        <form action="/pokedex/buscar" method="post" class="d-flex mx-auto" style="width: 400px;">
-            <input class="form-control me-2" type="text" name="nombre" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <!-- Agregar links -->
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<div class="container-fluid">
-    <div class="row flex-nowrap">
-        <!-- Sidebar lateral -->
-        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0" style="background-color: #15181F;">
-            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                <a href="#" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                    <span class="fs-5 d-none d-sm-inline">Pokedex</span>
+    <div class="sidebar text-white d-flex flex-column p-3">
+        <h2 class="text-center mb-4">Pokedex</h2>
+        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+            <li class="nav-item">
+                <a th:href="@{/pokedex/todos}" class="nav-link align-middle px-0">
+                    <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Inicio</span>
                 </a>
-                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                    <li class="nav-item">
-                        <a th:href="@{/pokedex/todos}" class="nav-link align-middle px-0">
-                            <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Inicio</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                            <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Generaciones</span>
-                        </a>
-                        <ul class="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                            <button onclick="filtrarGeneracion(1, 151)" class="gen-button">Gen I</button>
-                            <button onclick="filtrarGeneracion(152, 251)" class="gen-button">Gen II</button>
-                            <button onclick="filtrarGeneracion(252, 386)" class="gen-button">Gen III</button>
-                            <button onclick="filtrarGeneracion(387, 493)" class="gen-button">Gen IV</button>
-                            <button onclick="filtrarGeneracion(494, 649)" class="gen-button">Gen V</button>
-                            <button onclick="filtrarGeneracion(650, 721)" class="gen-button">Gen VI</button>
-                            <button onclick="filtrarGeneracion(722, 809)" class="gen-button">Gen VII</button>
-                            <button onclick="filtrarGeneracion(810, 905)" class="gen-button">Gen VIII</button>
-                            <button onclick="filtrarGeneracion(906, 1025)" class="gen-button">Gen IX</button>
-                            <li class="w-100"><a href="#" class="nav-link px-0">Gen 1</a></li>
-                            <li class="w-100"><a href="#" class="nav-link px-0">Gen 2</a></li>
-                            <li class="w-100"><a href="#" class="nav-link px-0">Gen 3</a></li>
-                            <li class="w-100"><a href="#" class="nav-link px-0">Gen 4</a></li>
-                            <li class="w-100"><a href="#" class="nav-link px-0">Gen 5</a></li>
-                            <li class="w-100"><a href="#" class="nav-link px-0">Gen 6</a></li>
-                            <li class="w-100"><a href="#" class="nav-link px-0">Gen 7</a></li>
-                            <li class="w-100"><a href="#" class="nav-link px-0">Gen 8</a></li>
-                            <li class="w-100"><a href="#" class="nav-link px-0">Gen 9</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                            <i class="fs-4 bi-compass-fill"></i> <span class="ms-1 d-none d-sm-inline">Tipos</span>
-                        </a>
-                        <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
-                            <!-- Aquí puedes cargar dinámicamente los tipos si deseas -->
-                            <li class="w-100"><a href="#" class="nav-link px-0">Item 1</a></li>
-                            <li><a href="#" class="nav-link px-0">Item 2</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link px-0 align-middle">
-                            <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Customers</span>
-                        </a>
-                    </li>
+            </li>
+            <li>
+                <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                    <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Generaciones</span>
+                </a>
+                <ul class="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
+                    <button onclick="filtrarGeneracion(1, 151)" class="gen-button">Gen I</button>
+                    <button onclick="filtrarGeneracion(152, 251)" class="gen-button">Gen II</button>
+                    <button onclick="filtrarGeneracion(252, 386)" class="gen-button">Gen III</button>
+                    <button onclick="filtrarGeneracion(387, 493)" class="gen-button">Gen IV</button>
+                    <button onclick="filtrarGeneracion(494, 649)" class="gen-button">Gen V</button>
+                    <button onclick="filtrarGeneracion(650, 721)" class="gen-button">Gen VI</button>
+                    <button onclick="filtrarGeneracion(722, 809)" class="gen-button">Gen VII</button>
+                    <button onclick="filtrarGeneracion(810, 905)" class="gen-button">Gen VIII</button>
+                    <button onclick="filtrarGeneracion(906, 1025)" class="gen-button">Gen IX</button>
+                    <li class="w-100"><a href="#" class="nav-link px-0">Gen 1</a></li>
+                    <li class="w-100"><a href="#" class="nav-link px-0">Gen 2</a></li>
+                    <li class="w-100"><a href="#" class="nav-link px-0">Gen 3</a></li>
+                    <li class="w-100"><a href="#" class="nav-link px-0">Gen 4</a></li>
+                    <li class="w-100"><a href="#" class="nav-link px-0">Gen 5</a></li>
+                    <li class="w-100"><a href="#" class="nav-link px-0">Gen 6</a></li>
+                    <li class="w-100"><a href="#" class="nav-link px-0">Gen 7</a></li>
+                    <li class="w-100"><a href="#" class="nav-link px-0">Gen 8</a></li>
+                    <li class="w-100"><a href="#" class="nav-link px-0">Gen 9</a></li>
                 </ul>
-                <hr>
+            </li>
+            <li>
+                <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                    <i class="fs-4 bi-compass-fill"></i> <span class="ms-1 d-none d-sm-inline">Tipos</span>
+                </a>
+                <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
+                    <!-- Aquí puedes cargar dinámicamente los tipos si deseas -->
+                    <li class="w-100"><a href="#" class="nav-link px-0">Item 1</a></li>
+                    <li><a href="#" class="nav-link px-0">Item 2</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="nav-link px-0 align-middle">
+                    <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Customers</span>
+                </a>
+            </li>
+        </ul>
+        <hr>
+    </div>
+
+    <!-- <div class="container-fluid">
+        <div class="row flex-nowrap">
+            Sidebar lateral
+            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0" style="background-color: #15181F;">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                    <a href="#"
+                        class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                        <span class="fs-5 d-none d-sm-inline">Pokedex</span>
+                    </a>
+                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
+                        id="menu">
+                        <li class="nav-item">
+                            <a th:href="@{/pokedex/todos}" class="nav-link align-middle px-0">
+                                <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Inicio</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Generaciones</span>
+                            </a>
+                            <ul class="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
+                                <button onclick="filtrarGeneracion(1, 151)" class="gen-button">Gen I</button>
+                                <button onclick="filtrarGeneracion(152, 251)" class="gen-button">Gen II</button>
+                                <button onclick="filtrarGeneracion(252, 386)" class="gen-button">Gen III</button>
+                                <button onclick="filtrarGeneracion(387, 493)" class="gen-button">Gen IV</button>
+                                <button onclick="filtrarGeneracion(494, 649)" class="gen-button">Gen V</button>
+                                <button onclick="filtrarGeneracion(650, 721)" class="gen-button">Gen VI</button>
+                                <button onclick="filtrarGeneracion(722, 809)" class="gen-button">Gen VII</button>
+                                <button onclick="filtrarGeneracion(810, 905)" class="gen-button">Gen VIII</button>
+                                <button onclick="filtrarGeneracion(906, 1025)" class="gen-button">Gen IX</button>
+                                <li class="w-100"><a href="#" class="nav-link px-0">Gen 1</a></li>
+                                <li class="w-100"><a href="#" class="nav-link px-0">Gen 2</a></li>
+                                <li class="w-100"><a href="#" class="nav-link px-0">Gen 3</a></li>
+                                <li class="w-100"><a href="#" class="nav-link px-0">Gen 4</a></li>
+                                <li class="w-100"><a href="#" class="nav-link px-0">Gen 5</a></li>
+                                <li class="w-100"><a href="#" class="nav-link px-0">Gen 6</a></li>
+                                <li class="w-100"><a href="#" class="nav-link px-0">Gen 7</a></li>
+                                <li class="w-100"><a href="#" class="nav-link px-0">Gen 8</a></li>
+                                <li class="w-100"><a href="#" class="nav-link px-0">Gen 9</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                                <i class="fs-4 bi-compass-fill"></i> <span class="ms-1 d-none d-sm-inline">Tipos</span>
+                            </a>
+                            <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
+                                Aquí puedes cargar dinámicamente los tipos si deseas
+                                <li class="w-100"><a href="#" class="nav-link px-0">Item 1</a></li>
+                                <li><a href="#" class="nav-link px-0">Item 2</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link px-0 align-middle">
+                                <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Customers</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <hr>
+                </div>
+            </div>
+
+            Aquí iría el contenido principal
+            <div class="col py-3">
+                <div th:replace="~{::section}"></div>
             </div>
         </div>
+    </div> -->
 
-        <!-- Aquí iría el contenido principal -->
-        <!-- <div class="col py-3">
-            <div th:replace="~{::section}"></div>
-        </div> -->
+
+    <div class="main-content">
+        <nav class="navbar navbar-expand-lg sticky-top navbar-dark" style="background-color: #1F232D;">
+            <div class="container-fluid">
+
+                <a class="navbar-brand" th:href="@{/pokedex/index}"><img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Pok%C3%A9_Ball_icon.svg/512px-Pok%C3%A9_Ball_icon.svg.png"
+                        alt="pokedex" class="img-fluid" width="50" height="50"></a>
+
+                <a class="navbar-brand" th:href="@{/pokedex/todos}"><img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Pok%C3%A9_Ball_icon.svg/512px-Pok%C3%A9_Ball_icon.svg.png"
+                        alt="pokedex-old" class="img-fluid" width="50" height="50"></a>
+
+                <form action="/pokedex/buscar" method="post" class="d-flex mx-auto" style="width: 400px;">
+                    <input class="form-control me-2" type="text" name="nombre" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <!-- Agregar links -->
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="content-inner" layout:fragment="body"></div>
+        <br><br>
+        <footer class="text-white text-center text-lg-start bg-dark">
+            <!-- Copyright -->
+            <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+                © 2025 Copyright:
+            </div>
+            <!-- Copyright -->
+        </footer>
     </div>
-</div>
-
-<!-- <hr>
-<div class="dropdown pb-4">
-    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-        id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30"
-            class="rounded-circle">
-        <span class="d-none d-sm-inline mx-1">Nombre de user</span>
-    </a>
-    <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-        <li><a class="dropdown-item" href="#">New project...</a></li>
-        <li><a class="dropdown-item" href="#">Settings</a></li>
-        <li><a class="dropdown-item" href="#">Profile</a></li>
-        <li>
-            <hr class="dropdown-divider">
-        </li>
-        <li><a class="dropdown-item" href="#">Sign out</a></li>
-    </ul>
-</div> -->
-
-<body layout:fragment="body">
-    <div>TODO write content</div>
 </body>
 
-<br><br>
-<footer class="text-white text-center text-lg-start bg-dark">
-    <!-- Copyright -->
-    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-        © 2025 Copyright:
-    </div>
-    <!-- Copyright -->
-</footer>
 
 </html>

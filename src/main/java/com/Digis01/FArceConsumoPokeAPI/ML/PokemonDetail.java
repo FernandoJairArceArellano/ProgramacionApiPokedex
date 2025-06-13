@@ -13,7 +13,8 @@ public class PokemonDetail {
 
     private List<TypeSlot> types;
 
-    // Getters y Setters
+    private PokemonColor color;
+
     public int getId() {
         return id;
     }
@@ -44,6 +45,14 @@ public class PokemonDetail {
 
     public void setTypes(List<TypeSlot> types) {
         this.types = types;
+    }
+
+    public PokemonColor getColor() {
+        return color;
+    }
+
+    public void setColor(PokemonColor color) {
+        this.color = color;
     }
 
     public static class Sprites {

@@ -2,15 +2,15 @@ package com.Digis01.FArceConsumoPokeAPI.ML;
 
 public class PokemonSpecies {
 
-    private Color color;
+    private PokemonColor color;
     private EvolutionChain evolution_chain;
 
     // getters y setters
-    public Color getColor() {
+    public PokemonColor getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(PokemonColor color) {
         this.color = color;
     }
 

@@ -124,7 +124,7 @@ public class PokemonController {
         detail.isIsDefault();
         detail.getBaseExperience();
         detail.getTypes().get(0).getType().getName();
-//        detail.getMovesListResults().get(0);
+        detail.getMoves().get(0);
         model.addAttribute("pokemon", detail);
         model.addAttribute("evoluciones", evoluciones);
         model.addAttribute("megas", megaEvoluciones);

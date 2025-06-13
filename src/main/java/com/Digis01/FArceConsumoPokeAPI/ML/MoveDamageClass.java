@@ -1,6 +1,6 @@
 package com.Digis01.FArceConsumoPokeAPI.ML;
 
-public class Move {
+public class MoveDamageClass {
 
     private String name;
     private String url;

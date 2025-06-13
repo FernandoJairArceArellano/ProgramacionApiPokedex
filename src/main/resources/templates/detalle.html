@@ -9,7 +9,7 @@
     <!-- <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-radar.min.js"></script> -->
 </head>
 
-<body layout:fragment="body">
+<body layout:fragment="body" class="bg-dark text-white">
     <div class="container mt-5">
         <a href="/pokedex/todos" class="btn btn-secondary mb-3">← Volver a la Pokédex</a>
 
@@ -19,12 +19,12 @@
                 <div class="container">
                     <div class="row row-cols-2">
                         <div class="row justify-content-center">
-                            <span>Forma natural</span>
+                            <span class="loading-text">Forma natural</span>
                             <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontDefault}"
                                 alt="Imagen Pokémon por deafault">
                         </div>
                         <div class="row justify-content-center">
-                            <span class="loading-text">Forma Shiny</span>
+                            <span class="loading-text-shiny">Forma Shiny</span>
                             <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontShiny}"
                                 alt="Imagen Pokémon Shiny">
                         </div>
@@ -35,12 +35,12 @@
                 <div class="container">
                     <div class="row row-cols-2">
                         <div class="row justify-content-center">
-                            <span>Forma natural</span>
+                            <span class="loading-text">Forma natural</span>
                             <img class="pokemon-shiny-img mb-3" th:src="${pokemon.sprites.other.showdown.frontDefault}"
                                 alt="Imagen Pokémon por deafault">
                         </div>
                         <div class="row justify-content-center">
-                            <span class="loading-text">Forma Shiny</span>
+                            <span class="loading-text-shiny">Forma Shiny</span>
                             <img class="pokemon-shiny-img mb-3" th:src="${pokemon.sprites.other.showdown.frontShiny}"
                                 alt="Imagen Pokémon Shiny">
                         </div>
@@ -122,7 +122,7 @@
     </div>
 
     <!-- Mega Evoluciones -->
-    <div class="container mt-5">
+    <div class="container mt-5" th:if="${mega != null}">
         <div class="wrapper">
             <div class="bg"> Mega Evoluciones </div>
             <div class="fg"> Mega Evoluciones </div>
@@ -220,9 +220,21 @@
             text-transform: capitalize;
         }
 
-        .loading-text {
+        .loading-text-shiny {
             place-self: center;
             background: linear-gradient(90deg, #326dfa, #ff8a00, #fabf32)-100%/ 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+
+            color: transparent;
+            font: 900 clamp(2em, 10vw, 10em) exo, sans-serif;
+            font-size: 250%;
+            animation: shimer 2s linear infinite;
+        }
+
+        .loading-text {
+            place-self: center;
+            background: linear-gradient(90deg, #36e7a1, #d29b1f, #e7367c)-100%/ 200%;
             -webkit-background-clip: text;
             background-clip: text;
 

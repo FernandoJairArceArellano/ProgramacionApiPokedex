@@ -85,13 +85,13 @@
     <div class="container py-5">
         <h1 class="mb-4 text-center">Busca tu Pokémon</h1>
 
-        <form action="/pokedex/buscar" method="post" class="mb-4">
-            <div class="input-group">
+        <div class="input-group">
+            <form action="/pokedex/buscar" method="post" class="mb-4">
                 <input type="text" name="nombre" class="form-control" placeholder="Escribe un nombre de Pokémon"
                     required>
                 <button class="btn btn-primary" type="submit">Buscar</button>
-            </div>
-        </form>
+            </form>
+        </div>
 
         <div th:if="${pokemon != null}" class="card">
             <div class="card-body">
@@ -194,7 +194,7 @@
         </div> -->
     </div>
     <script>
-        
+
     </script>
 </body>
 

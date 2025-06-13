@@ -76,10 +76,17 @@ public class PokemonController {
             Buscar un pokemon en especifico sin la busqueda de la informacion dinamica
          */
         Pokemon pokemon = pokemonService.getPokemon(nombre);
-        pokemon.getSprites().getFrontDefault();
-        pokemon.getTypes().get(0).getType().getName();
+        if (pokemon != null) {
+            pokemon.getSprites().getFrontDefault();
+            pokemon.getTypes().get(0).getType().getName();
+        } else {
+            model.addAttribute("mensajeError", "No se encontró el Pokémon ingresado: " + nombre);
+        }
+
+        var response = pokemonService.getAllPokemons();
+        model.addAttribute("pokemons", response.getResults());
         model.addAttribute("pokemon", pokemon);
-        return "index";
+        return "indexold";
     }
 
     @GetMapping("/todos")
@@ -89,6 +96,7 @@ public class PokemonController {
          */
         var response = pokemonService.getAllPokemons();
         model.addAttribute("pokemons", response.getResults());
+        //return "indexold";
         return "indexold";
     }
 
@@ -116,6 +124,7 @@ public class PokemonController {
         detail.isIsDefault();
         detail.getBaseExperience();
         detail.getTypes().get(0).getType().getName();
+//        detail.getMovesListResults().get(0);
         model.addAttribute("pokemon", detail);
         model.addAttribute("evoluciones", evoluciones);
         model.addAttribute("megas", megaEvoluciones);

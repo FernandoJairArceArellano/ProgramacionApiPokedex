@@ -20,6 +20,8 @@ public class Pokemon {
 
     private List<TypeSlot> types;
 
+    private List<MovesListResult> moves;
+
     private List<Form> forms;
 
     private List<Stat> stats;
@@ -86,6 +88,14 @@ public class Pokemon {
 
     public void setTypes(List<TypeSlot> types) {
         this.types = types;
+    }
+
+    public List<MovesListResult> getMovesListResults() {
+        return moves;
+    }
+
+    public void setMovesListResults(List<MovesListResult> movesListResults) {
+        this.moves = movesListResults;
     }
 
     public List<Form> getForms() {

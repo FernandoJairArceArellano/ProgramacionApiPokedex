@@ -13,10 +13,9 @@ import com.Digis01.FArceConsumoPokeAPI.ML.TypeData;
 import com.Digis01.FArceConsumoPokeAPI.ML.TypeSlot;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -27,10 +26,17 @@ public class PokemonService {
 
     public Pokemon getPokemon(String name) {
         String url = baseUrl + name.toLowerCase();
-        Pokemon pokemon = restTemplate.getForObject(url, Pokemon.class);
-
-        agregarIconosTipos(pokemon);
-        return pokemon;
+        try {
+            Pokemon pokemon = restTemplate.getForObject(url, Pokemon.class);
+            if (pokemon != null) {
+                agregarIconosTipos(pokemon);
+            }
+            return pokemon;
+        } catch (HttpClientErrorException e) {
+            // Puedes loguear el error si deseas
+            System.out.println("No se encontró el Pokémon: " + name);
+            return null;
+        }
     }
 
     public List<Pokemon> getAllPokemon() {
@@ -38,6 +44,7 @@ public class PokemonService {
         PokemonListResponse response = restTemplate.getForObject(url, PokemonListResponse.class);
 
         List<Pokemon> pokemons = new ArrayList<>();
+
         for (var result : response.getResults()) {
             Pokemon pokemon = restTemplate.getForObject(result.getUrl(), Pokemon.class);
             agregarIconosTipos(pokemon);
@@ -64,7 +71,6 @@ public class PokemonService {
 //                .collect(Collectors.toList());
 //
 //    }
-    
     public List<Pokemon> getPokemonsByGeneration(int gen) {
         int start = 1, end = 151;
 
@@ -113,6 +119,11 @@ public class PokemonService {
         return pokemons;
     }
 
+    public PokemonSpecies getColors(String typeColor) {
+//        Sring url = ""
+        return null;
+    }
+
     public TypeData getPokemonType(String typeName) {
         String url = "https://pokeapi.co/api/v2/type/" + typeName.toLowerCase();
         return restTemplate.getForObject(url, TypeData.class);
@@ -130,7 +141,7 @@ public class PokemonService {
                             .getNameIcon();
                     typeSlot.setTypeIconUrl(iconUrl);
                 } catch (Exception e) {
-                    typeSlot.setTypeIconUrl(null); // En caso de error, dejar null
+                    typeSlot.setTypeIconUrl(null);
                 }
             }
         }

@@ -22,10 +22,6 @@ public class PokemonSpecies {
         this.evolution_chain = evolution_chain;
     }
 
-    public Object getUrl() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
     public static class EvolutionChain {
 
         private String url;

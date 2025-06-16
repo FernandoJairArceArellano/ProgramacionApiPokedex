@@ -2,12 +2,10 @@ package com.Digis01.FArceConsumoPokeAPI.DAO;
 
 import com.Digis01.FArceConsumoPokeAPI.ML.EvolutionChainResponse;
 import com.Digis01.FArceConsumoPokeAPI.ML.Form;
-import com.Digis01.FArceConsumoPokeAPI.ML.GenerationResponse;
 import com.Digis01.FArceConsumoPokeAPI.ML.MoveData;
 import com.Digis01.FArceConsumoPokeAPI.ML.MoveSlot;
 import com.Digis01.FArceConsumoPokeAPI.ML.PokemonListResponse;
 import com.Digis01.FArceConsumoPokeAPI.ML.Pokemon;
-import com.Digis01.FArceConsumoPokeAPI.ML.PokemonDetail;
 import com.Digis01.FArceConsumoPokeAPI.ML.PokemonEvolucion;
 import com.Digis01.FArceConsumoPokeAPI.ML.PokemonResponse;
 import com.Digis01.FArceConsumoPokeAPI.ML.PokemonSpecies;
@@ -178,16 +176,7 @@ public class PokemonService {
 
         agregarIconosTipos(pokemonDetail);
         agregarDetallesMovimientos(pokemonDetail);
-
-//        PokemonSpecies species = getPokemonSpecies(idOrName);
-//        pokemonDetail.set
-//        String speciesUrl = "https://pokeapi.co/api/v2/pokemon-species/" + idOrName;
-//        PokemonSpecies species = restTemplate.getForObject(speciesUrl, PokemonSpecies.class);
-//
-//        pokemonDetail.setColor(species.getColor());
-        
         return pokemonDetail;
-
     }
 
     public List<PokemonEvolucion> getEvoluciones(String idOrName) {
@@ -201,13 +190,7 @@ public class PokemonService {
         String evoChainUrl = species.getEvolution_chain().getUrl();
         EvolutionChainResponse chainResponse = restTemplate.getForObject(evoChainUrl, EvolutionChainResponse.class);
         List<PokemonEvolucion> evoluciones = new ArrayList<>();
-
-        boolean encontrado = buscarEvolucionesDesde(chainResponse.getChain(), idOrName.toLowerCase(), evoluciones);
-
-        // Si no lo encuentra en la cadena, devolvemos la cadena completa
-        if (!encontrado) {
-            agregarNodoYEvoluciones(chainResponse.getChain(), evoluciones);
-        }
+        agregarNodoYEvoluciones(chainResponse.getChain(), evoluciones);
 
         return evoluciones;
     }
@@ -238,26 +221,4 @@ public class PokemonService {
             agregarNodoYEvoluciones(next, result);
         }
     }
-
-    public List<PokemonEvolucion> getMegaEvoluciones(String idOrName) {
-        String url = "https://pokeapi.co/api/v2/pokemon/" + idOrName.toLowerCase();
-        Pokemon pokemon = restTemplate.getForObject(url, Pokemon.class);
-
-        if (pokemon == null || pokemon.getForms() == null || pokemon.getForms().isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<PokemonEvolucion> megaEvoluciones = new ArrayList<>();
-
-        for (Form form : pokemon.getForms()) {
-            if (form.getName().contains("mega")) {
-                String formUrl = form.getUrl();
-                Pokemon formDetail = restTemplate.getForObject(formUrl, Pokemon.class);
-                megaEvoluciones.add(new PokemonEvolucion(form.getName(), formDetail.getSprites().getFrontDefault()));
-            }
-        }
-
-        return megaEvoluciones;
-    }
-
 }

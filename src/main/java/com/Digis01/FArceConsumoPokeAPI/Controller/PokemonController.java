@@ -3,8 +3,8 @@ package com.Digis01.FArceConsumoPokeAPI.Controller;
 import com.Digis01.FArceConsumoPokeAPI.DAO.PokemonService;
 import com.Digis01.FArceConsumoPokeAPI.ML.PokemonEvolucion;
 import com.Digis01.FArceConsumoPokeAPI.ML.Pokemon;
-import com.Digis01.FArceConsumoPokeAPI.ML.PokemonSpecies;
-
+import com.Digis01.FArceConsumoPokeAPI.ML.Result;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -96,7 +96,16 @@ public class PokemonController {
          */
         var response = pokemonService.getAllPokemons();
         model.addAttribute("pokemons", response.getResults());
-        //return "indexold";
+//        List<PokemonWithColor> pokemonsWithColor = response.getResults().stream().map(summary -> {
+//            String color = "";
+//            try {
+//                PokemonSpecies species = pokemonService.getPokemonSpecies(summary.getName());
+//                color = species.getColor().getName();
+//            } catch (Exception e) {
+//                color = "unknown";  // Si hay error
+//            }
+//            return new PokemonWithColor(summary.getName(), summary.getUrl(), color);
+//        }).collect(Collectors.toList());
         return "indexold";
     }
 
@@ -109,25 +118,62 @@ public class PokemonController {
 
     @GetMapping("/pokemon/{id}")
     public String getPokemonDetail(@PathVariable String id, Model model) {
-        /*
-            Obtener toda la informacion del pokemon a ver en especifico
-         */
-        Pokemon detail = pokemonService.getPokemonDetail(id);
+        Result result = new Result();
 
-        List<PokemonEvolucion> evoluciones = pokemonService.getEvoluciones(id);
-        List<PokemonEvolucion> megaEvoluciones = pokemonService.getMegaEvoluciones(id);
+        try {
+            Pokemon detail = pokemonService.getPokemonDetail(id);
 
-        detail.getSprites().getFrontDefault();
-        detail.getSprites().getFrontShiny();
-        detail.getSprites().getOther().getShowdown().getFrontDefault();
-        detail.getSprites().getOther().getShowdown().getFrontShiny();
-        detail.isIsDefault();
-        detail.getBaseExperience();
-        detail.getTypes().get(0).getType().getName();
-        detail.getMoves().get(0);
-        model.addAttribute("pokemon", detail);
-        model.addAttribute("evoluciones", evoluciones);
-        model.addAttribute("megas", megaEvoluciones);
+            // Validaciones defensivas
+            if (detail.getSprites() != null && detail.getSprites().getOther() != null) {
+                if (detail.getSprites().getFrontDefault() != null) {
+                    detail.getSprites().getFrontDefault();
+                }
+                if (detail.getSprites().getFrontShiny() != null) {
+                    detail.getSprites().getFrontShiny();
+                }
+                if (detail.getSprites().getOther().getShowdown() != null) {
+                    detail.getSprites().getOther().getShowdown().getFrontDefault();
+                    detail.getSprites().getOther().getShowdown().getFrontShiny();
+                }
+            }
+
+            if (detail.getTypes() != null && !detail.getTypes().isEmpty()) {
+                detail.getTypes().get(0).getType().getName();
+            }
+
+            if (detail.getMoves() != null && !detail.getMoves().isEmpty()) {
+                detail.getMoves().get(0); // solo para asegurarse que hay uno
+            }
+
+            model.addAttribute("pokemon", detail);
+
+            // Obtener nombre base (sin forma alterna)
+            String baseName = detail.getName().split("-")[0];
+
+            // Validar si es el Pokémon base (is_default = true)
+            if (detail.isIsDefault()) {
+                List<PokemonEvolucion> evoluciones = pokemonService.getEvoluciones(baseName);
+                model.addAttribute("evoluciones", evoluciones);
+            } else {
+                model.addAttribute("evoluciones", new ArrayList<>()); // ← evita null en la vista
+            }
+
+            // Puedes también preparar una lista de "megas" vacía si usas eso
+            model.addAttribute("megas", new ArrayList<>()); // ← opcional
+
+            result.correct = true;
+            result.object = detail;
+
+        } catch (Exception ex) {
+            result.correct = false;
+            result.ex = ex;
+            result.errorMessage = "Error al obtener detalles del Pokémon";
+            model.addAttribute("error", result.errorMessage);
+            model.addAttribute("exception", result.ex.getMessage());
+            ex.printStackTrace(); // para consola
+            return "error"; // ← asegúrate que exista "error.html"
+        }
+
         return "detalle";
     }
 

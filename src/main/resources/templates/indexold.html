@@ -7,10 +7,12 @@
     <style>
         /* From Uiverse.io by Pravins01 */
         .card {
+            --color: #000;
             position: relative;
-            width: 190px;
+            width: 100%;
+            max-width: 190px;
             height: 254px;
-            background-color: #000;
+            background-color: var(--color);
             display: flex;
             flex-direction: column;
             justify-content: end;
@@ -30,7 +32,7 @@
             width: 200px;
             height: 264px;
             border-radius: 10px;
-            background: linear-gradient(-45deg, #e81cff 0%, #40c9ff 100%);
+            background: var(--bg-gradient, linear-gradient(-45deg, #999, #030d11));
             z-index: -10;
             pointer-events: none;
             transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -41,7 +43,7 @@
             z-index: -1;
             position: absolute;
             inset: 0;
-            background: linear-gradient(-45deg, #fc00ff 0%, #00dbde 100%);
+            background: var(--bg-gradient, linear-gradient(-45deg, #999, #030d11));
             transform: translate3d(0, 0, 0) scale(0.95);
             filter: blur(20px);
         }
@@ -70,8 +72,8 @@
         }
 
         .pokemon-img {
-            width: 120px;
-            height: 120px;
+            width: 150px;
+            height: 150px;
             object-fit: contain;
             display: block;
             margin: 0 auto;
@@ -130,11 +132,9 @@
 
         .gen-button:hover {
             background-color: #3b4cca;
-            /* Azul PokeAPI */
             color: #fff;
             transform: scale(1.05);
-            border-color: #ffcb05;
-            /* Amarillo Pokémon */
+            /* border-color: #ffcb05; */
         }
 
         .active-gen {
@@ -143,17 +143,8 @@
             transform: scale(1.05);
         }
 
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 2fr);
-            /* 3 columnas fijas */
-            gap: 30px 53px;
-            margin: 30px 0px 0px;
-        }
-
         .card {
             background-color: #2C303B !important;
-            /* Fondo oscuro */
             border-color: #495057 !important;
         }
 
@@ -161,14 +152,18 @@
             transform: scale(1.03);
         }
 
-        /* .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 1rem;
-        } */
-
         .pokemon-card {
+            display: none;
+            justify-content: center;
+            align-items: center;
             transition: all 0.3s ease;
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .pokeball-btn img {
@@ -178,7 +173,6 @@
         .pokeball-btn:hover img {
             transform: rotate(360deg);
         }
-
 
         @media (max-width: 768px) {
             .logo-container {
@@ -198,12 +192,6 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-
-        @media (max-width: 480px) {
-            .card-grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 
@@ -211,7 +199,7 @@
 
     <div class="container-fluid mt-4">
 
-        <div class="logo-container shadow text-center mb-4">
+        <div class="logo-container shadow text-center mt-3 mb-4">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/404px-International_Pok%C3%A9mon_logo.svg.png"
                 alt="Pokémon Logo" class="logo-img">
             <div class="versus">
@@ -238,39 +226,31 @@
             <span th:text="${mensajeError}"></span>
         </div>
 
-        <div class="gen-buttons mb-3 text-center">
-            <button onclick="filtrarGeneracion(1, 151)" class="gen-button">Gen I</button>
-            <button onclick="filtrarGeneracion(152, 251)" class="gen-button">Gen II</button>
-            <button onclick="filtrarGeneracion(252, 386)" class="gen-button">Gen III</button>
-            <button onclick="filtrarGeneracion(387, 493)" class="gen-button">Gen IV</button>
-            <button onclick="filtrarGeneracion(494, 649)" class="gen-button">Gen V</button>
-            <button onclick="filtrarGeneracion(650, 721)" class="gen-button">Gen VI</button>
-            <button onclick="filtrarGeneracion(722, 809)" class="gen-button">Gen VII</button>
-            <button onclick="filtrarGeneracion(810, 905)" class="gen-button">Gen VIII</button>
-            <button onclick="filtrarGeneracion(906, 1025)" class="gen-button">Gen IX</button>
+        <div class="gen-buttons mt-3 mb-3  pt-3 text-center">
+            <button onclick="filtrarGeneracion(1, 151, this)" class="gen-button">Gen I</button>
+            <button onclick="filtrarGeneracion(152, 251, this)" class="gen-button">Gen II</button>
+            <button onclick="filtrarGeneracion(252, 386, this)" class="gen-button">Gen III</button>
+            <button onclick="filtrarGeneracion(387, 493, this)" class="gen-button">Gen IV</button>
+            <button onclick="filtrarGeneracion(494, 649, this)" class="gen-button">Gen V</button>
+            <button onclick="filtrarGeneracion(650, 721, this)" class="gen-button">Gen VI</button>
+            <button onclick="filtrarGeneracion(722, 809, this)" class="gen-button">Gen VII</button>
+            <button onclick="filtrarGeneracion(810, 905, this)" class="gen-button">Gen VIII</button>
+            <button onclick="filtrarGeneracion(906, 1025, this)" class="gen-button">Gen IX</button>
         </div>
 
-        <div class="row row-cols-1 row-cols-md-6 g-4" id="pokemon-container">
-            <div th:each="pokemon : ${pokemons}" class="pokemon-card">
-                <div class="card h-100 shadow-sm text-center text-white border-secondary">
-                    <div class="card-body">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xxl-5 row-cols-xxl-6 g-5 mt-3">
+            <div th:each="pokemon : ${pokemons}" class="pokemon-card" th:attr="data-name=${pokemon.name}">
+                <div class="card h-100 w-80 shadow-sm text-center text-white border-secondary">
+                    <div class="card-body flex">
                         <img class="pokemon-img mb-1"
                             th:src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + ${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon/', '').replace('/', '')} + '.png'"
                             alt="Imagen de Pokémon">
-
+                        <h5 class="card-title text-capitalize mt-1" th:text="${pokemon.name}">Nombre</h5>
                         <div class="pokemon-id">
                             #
                             <span class="poke-id"
                                 th:text="${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon/', '').replace('/', '')}">001</span>
                         </div>
-
-                        <h5 class="card-title text-capitalize mt-1" th:text="${pokemon.name}">Nombre</h5>
-
-                        <!-- <span th:each="typeSlot : ${pokemon.types}" class="badge bg-secondary me-1">
-                            <img th:src="${typeSlot.typeIconUrl}" style="height: 20px;" alt="icono tipo" />
-                            <span th:text="${typeSlot.type.name}"></span>
-                        </span> -->
-
                         <a th:href="@{'/pokedex/pokemon/' + ${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon/', '').replace('/', '')}}"
                             class="btn btn-outline-light btn-sm mt-2 pokeball-btn">
                             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Pok%C3%A9_Ball_icon.svg/512px-Pok%C3%A9_Ball_icon.svg.png"
@@ -280,11 +260,10 @@
                 </div>
             </div>
         </div>
-
-
     </div>
+
     <script>
-        function filtrarGeneracion(min, max) {
+        function filtrarGeneracion(min, max, botonClicado = null) {
             const cards = document.querySelectorAll('.pokemon-card');
 
             cards.forEach(card => {
@@ -292,21 +271,146 @@
                 if (!idSpan) return;
 
                 const id = parseInt(idSpan.textContent.trim());
-                if (id >= min && id <= max) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
+                card.style.display = (id >= min && id <= max) ? 'flex' : 'none';
             });
 
-            // Opcional: scroll hacia arriba
+            // Quitar clase activa a todos los botones
+            const botones = document.querySelectorAll('.gen-button');
+            botones.forEach(b => b.classList.remove('active-gen'));
+
+            // Activar botón clicado y guardar datos
+            if (botonClicado) {
+                botonClicado.classList.add('active-gen');
+                const index = Array.from(botones).indexOf(botonClicado);
+                localStorage.setItem("generacionSeleccionada", JSON.stringify({ min, max, index }));
+            } else {
+                // Restaurar botón activo desde localStorage
+                const data = JSON.parse(localStorage.getItem("generacionSeleccionada"));
+                if (data && typeof data.index === "number") {
+                    const boton = botones[data.index];
+                    if (boton) boton.classList.add("active-gen");
+                } else {
+                    // Por defecto: activar el primer botón (Gen I)
+                    botones[0].classList.add("active-gen");
+                }
+            }
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Mostrar Gen I al cargar
-        document.addEventListener('DOMContentLoaded', () => {
-            filtrarGeneracion(1, 151);
+        document.addEventListener("DOMContentLoaded", function () {
+            const typeColors = {
+                normal: { base: "#A8A77A", accent: "#C6C6A7" },
+                fire: { base: "#eb2632", accent: "#f55e3c" },
+                water: { base: "#6390F0", accent: "#7ac7f3" },
+                electric: { base: "#F7D02C", accent: "#ffe04e" },
+                grass: { base: "#4ef037", accent: "#80f872" },
+                ice: { base: "#96D9D6", accent: "#b4f0ec" },
+                fighting: { base: "#8f4426", accent: "#bf6342" },
+                poison: { base: "#d7acd4", accent: "#f0c9ec" },
+                ground: { base: "#E2BF65", accent: "#f1db90" },
+                flying: { base: "#A98FF3", accent: "#9dc3f9" },
+                psychic: { base: "#e58cdb", accent: "#fabdf4" },
+                bug: { base: "#efd510", accent: "#fcf183" },
+                rock: { base: "#B6A136", accent: "#d1b85e" },
+                ghost: { base: "#645fce", accent: "#8985f1" },
+                dragon: { base: "#6F35FC", accent: "#a177ff" },
+                dark: { base: "#705746", accent: "#a07e69" },
+                steel: { base: "#B7B7CE", accent: "#d1d1e4" },
+                fairy: { base: "#D685AD", accent: "#f0acc9" }
+            };
+
+            const cards = document.querySelectorAll(".pokemon-card");
+            let completados = 0;
+            const total = cards.length;
+
+            cards.forEach(card => {
+                const name = card.getAttribute("data-name");
+                const cachedData = sessionStorage.getItem(`pokemon-types-${name}`);
+
+                if (cachedData) {
+                    const types = JSON.parse(cachedData);
+                    pintarTipos(card, types);
+                    completados++;
+                    if (completados === total) restaurarGeneracionGuardada();
+                } else {
+                    fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            const types = data.types.map(t => t.type.name);
+                            sessionStorage.setItem(`pokemon-types-${name}`, JSON.stringify(types));
+                            pintarTipos(card, types);
+                        })
+                        .catch(err => console.error(`Error con ${name}:`, err))
+                        .finally(() => {
+                            completados++;
+                            if (completados === total) restaurarGeneracionGuardada();
+                        });
+                }
+            });
+
+            function restaurarGeneracionGuardada() {
+                const data = JSON.parse(localStorage.getItem("generacionSeleccionada"));
+                if (data) {
+                    filtrarGeneracion(data.min, data.max);
+                } else {
+                    filtrarGeneracion(1, 151);
+                }
+            }
+
+            function restaurarFiltroDefault() {
+                localStorage.removeItem("generacionSeleccionada");
+
+                // Obtener el botón Gen I (asumimos que es el primero)
+                const primerBoton = document.querySelectorAll(".gen-button")[0];
+                filtrarGeneracion(1, 151, primerBoton);
+            }
+
+            function generarGradiente(tipo1, tipo2 = null) {
+                const color1 = typeColors[tipo1]?.base || "#999";
+                const color1Accent = typeColors[tipo1]?.accent || "#aaa";
+
+                if (!tipo2 || tipo1 === tipo2) {
+                    // Un solo tipo: degradado con el mismo color y un tono más claro
+                    return `linear-gradient(135deg, ${color1} 0%, ${color1Accent} 100%)`;
+                }
+
+                const color2 = typeColors[tipo2]?.base || "#666";
+                const mixColor = mezclarColores(color1, color2);
+                return `linear-gradient(135deg, ${color1} 0%, ${mixColor} 50%, ${color2} 100%)`;
+            }
+
+            function mezclarColores(hex1, hex2) {
+                const rgb1 = hexToRgb(hex1);
+                const rgb2 = hexToRgb(hex2);
+
+                const r = Math.floor((rgb1.r + rgb2.r) / 2);
+                const g = Math.floor((rgb1.g + rgb2.g) / 2);
+                const b = Math.floor((rgb1.b + rgb2.b) / 2);
+
+                return `rgb(${r}, ${g}, ${b})`;
+            }
+
+            function hexToRgb(hex) {
+                hex = hex.replace("#", "");
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const bigint = parseInt(hex, 16);
+                return {
+                    r: (bigint >> 16) & 255,
+                    g: (bigint >> 8) & 255,
+                    b: bigint & 255
+                };
+            }
+
+            function pintarTipos(card, tipos) {
+                const innerCard = card.querySelector(".card");
+
+                const gradiente = generarGradiente(tipos[0], tipos[1]);
+                innerCard.style.setProperty("--bg-gradient", gradiente);
+            }
         });
+
+
     </script>
 
 </body>

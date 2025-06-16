@@ -4,9 +4,7 @@
 
 <head>
     <title>Pokédex</title>
-    <!-- <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-core.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-radar.min.js"></script> -->
 </head>
 
 <body layout:fragment="body" class="bg-dark text-white">
@@ -21,12 +19,12 @@
                         <div class="row justify-content-center">
                             <span class="loading-text">Forma natural</span>
                             <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontDefault}"
-                                alt="Imagen Pokémon por deafault">
+                                alt="Imagen Pokémon por deafault" style="width: 250px; height: 250px;">
                         </div>
                         <div class="row justify-content-center">
                             <span class="loading-text-shiny">Forma Shiny</span>
                             <img class="pokemon-img mb-3" th:src="${pokemon.sprites.frontShiny}"
-                                alt="Imagen Pokémon Shiny">
+                                alt="Imagen Pokémon Shiny" style="width: 250px; height: 250px;">
                         </div>
                     </div>
                 </div>
@@ -37,12 +35,12 @@
                         <div class="row justify-content-center">
                             <span class="loading-text">Forma natural</span>
                             <img class="pokemon-shiny-img mb-3" th:src="${pokemon.sprites.other.showdown.frontDefault}"
-                                alt="Imagen Pokémon por deafault">
+                                alt="Imagen Pokémon por deafault" style="width: 105px; height: 113px;">
                         </div>
                         <div class="row justify-content-center">
                             <span class="loading-text-shiny">Forma Shiny</span>
                             <img class="pokemon-shiny-img mb-3" th:src="${pokemon.sprites.other.showdown.frontShiny}"
-                                alt="Imagen Pokémon Shiny">
+                                alt="Imagen Pokémon Shiny" style="width: 105px; height: 113px;">
                         </div>
                     </div>
                 </div>
@@ -60,30 +58,9 @@
                     <!-- Tipos del pokemon -->
                     <span th:text="${pokemon.types.size() > 1 ? 'Tipos:' : 'Tipo:'}"></span>
                     <br><br>
-                    <!-- <span th:each="t : ${pokemon.types}" class="badge bg-primary type-badge"
-                        th:text="${t.type.name}">tipo</span> -->
 
                     <span th:each="typeSlot : ${pokemon.types}" class="badge bg-secondary me-1">
                         <img th:src="${typeSlot.typeIconUrl}" style="height: 20px;" alt="icono tipo" />
-                    </span>
-
-                    <br><br>
-                    <span>
-                        <h3>Movimientos:</h3>
-                        <ul>
-                            <li th:each="moveSlot : ${pokemon.moves}">
-                                <strong th:text="${moveSlot.move.name}">Movimiento</strong> -
-                                <span th:text="${moveSlot.moveData.type.name}">Tipo</span> -
-                                Poder: <span th:text="${moveSlot.moveData.power}">Power</span> -
-                                Precisión: <span th:text="${moveSlot.moveData.accuracy}">Accuracy</span> -
-                                PP: <span th:text="${moveSlot.moveData.pp}">PP</span>
-                            </li>
-                        </ul>
-                    </span>
-
-                    <span>
-                        <!-- <h3>Color del Pokémon:</h3>
-                        <p th:text="${pokemon.color.name}">Color</p> -->
                     </span>
                 </div>
             </div>
@@ -113,41 +90,77 @@
         </div>
     </div>
 
-
     <!-- Evoluciones -->
-    <div class="container mt-5">
-        <div class="wrapper">
-            <div class="bg"> Evoluciones </div>
-            <div class="fg"> Evoluciones </div>
+    <div th:if="${evoluciones != null and #lists.size(evoluciones) > 0}">
+        <div class="container mt-5">
+            <div class="wrapper">
+                <div class="bg"> Evoluciones </div>
+                <div class="fg"> Evoluciones </div>
+            </div>
         </div>
-    </div>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col" th:each="evolucion : ${evoluciones}">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <h2 class="text-link" th:text="${evolucion.nombre}">Nombre</h2>
-                        <img class="pokemon-img mb-3" th:src="${evolucion.imagen}" alt="Imagen evolución" />
-                    </div>
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col" th:each="evolucion : ${evoluciones}">
+                    <a th:href="@{'/pokedex/pokemon/' + ${evolucion.nombre}}"
+                        style="text-decoration: none; color: inherit;"
+                        th:classappend="${evolucion.nombre == pokemon.name} ? ' current-pokemon' : ''">
+                        <div class="card shadow-sm hover-shadow" style="cursor: pointer;">
+                            <div class="card-body text-center">
+                                <h2 class="text-link" th:text="${evolucion.nombre}">Nombre</h2>
+                                <img class="pokemon-img-evo mb-3" th:src="${evolucion.imagen}" alt="Imagen evolución" />
+                            </div>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Mega Evoluciones -->
-    <div class="container mt-5" th:if="${mega != null}">
-        <div class="wrapper">
-            <div class="bg"> Mega Evoluciones </div>
-            <div class="fg"> Mega Evoluciones </div>
+    <!-- Formas Alternas -->
+    <div id="seccion-formas-alternas" style="display:none;">
+        <div class="container mt-5">
+            <div class="wrapper">
+                <div class="bg"> Formas Alternas </div>
+                <div class="fg"> Formas Alternas </div>
+            </div>
+        </div>
+        <div class="container mt-5">
+            <div id="formas-alternas" class="row">
+                <!-- Aquí se agregan dinámicamente las cards -->
+            </div>
         </div>
     </div>
-    <div class="container mt-5">
-        <div class="row row-cols-2 row-cols-lg-5 g-2">
-            <div class="col" th:each="mega : ${megas}">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <h2 class="text-capitalize" th:text="${mega.nombre}">Nombre</h2>
-                        <img class="pokemon-img mb-3" th:src="${mega.imagen}" alt="Mega evolución" />
+
+    <br><br>
+    <div th:if="${pokemon.moves != null and #lists.size(pokemon.moves) > 0}">
+        <div class="container mt-5">
+            <div class="wrapper">
+                <div class="bg"> Movimientos </div>
+                <div class="fg"> Movimientos </div>
+            </div>
+        </div>
+        <div class="container mt-5">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="pokemon-moves-container">
+                        <ul class="pokemon-move-list">
+                            <li th:each="moveSlot : ${pokemon.moves}" class="pokemon-move"
+                                th:classappend="' type-' + ${moveSlot.moveData.type.name.toLowerCase()}"
+                                th:attr="data-move-name=${moveSlot.move.name}">
+                                <div class="move-header">
+                                    <span class="move-type" th:text="${moveSlot.moveData.type.name}">Tipo</span>
+                                    <span class="move-name" th:text="${moveSlot.move.name}">Nombre</span>
+                                    <span class="move-pp" th:text="'PP: ' + ${moveSlot.moveData.pp}">PP</span>
+                                </div>
+                                <div class="move-details">
+                                    <span>Poder: <span th:text="${moveSlot.moveData.power}">Poder</span></span> |
+                                    <span>Precisión: <span
+                                            th:text="${moveSlot.moveData.accuracy}">Precisión</span></span>
+                                </div>
+                                <div class="move-description mt-1 text-start small text-black" style="display:none;">
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -208,10 +221,103 @@
 
         const ctx = document.getElementById('radarChart').getContext('2d');
         new Chart(ctx, config);
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const moves = document.querySelectorAll(".pokemon-move");
+
+            moves.forEach(move => {
+                move.addEventListener("mouseenter", async () => {
+                    const descDiv = move.querySelector(".move-description");
+                    if (descDiv.textContent.trim()) {
+                        descDiv.style.display = "block"; // Ya se cargó
+                        return;
+                    }
+
+                    const moveName = move.getAttribute("data-move-name");
+
+                    try {
+                        const response = await fetch(`https://pokeapi.co/api/v2/move/${moveName}`);
+                        const data = await response.json();
+
+                        const spanishEntry = data.effect_entries.find(entry => entry.language.name === "en");
+                        const description = spanishEntry ? spanishEntry.short_effect : "Descripción no disponible.";
+
+                        descDiv.textContent = description;
+                        descDiv.style.display = "block";
+                    } catch (error) {
+                        console.error("Error al obtener la descripción del movimiento:", error);
+                        descDiv.textContent = "Error al cargar la descripción.";
+                        descDiv.style.display = "block";
+                    }
+                });
+
+                move.addEventListener("mouseleave", () => {
+                    const descDiv = move.querySelector(".move-description");
+                    descDiv.style.display = "none";
+                });
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const nombrePokemon = document.querySelector("h2.text-capitalize").textContent.toLowerCase();
+            const contenedor = document.getElementById("formas-alternas");
+
+            try {
+                const resSpecies = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${nombrePokemon}`);
+                const speciesData = await resSpecies.json();
+
+                const variedades = speciesData.varieties;
+
+                let hayFormasAlternas = false;
+
+                for (const variedad of variedades) {
+                    if (!variedad.is_default) {
+                        const resForm = await fetch(variedad.pokemon.url);
+                        const formData = await resForm.json();
+
+                        const id = formData.id;
+                        const nombre = formData.name;
+                        const imagen = formData.sprites.front_default;
+
+                        if (imagen) {
+                            hayFormasAlternas = true;
+                            const card = document.createElement("div");
+                            card.classList.add("col");
+                            card.innerHTML = `
+                <a href="/pokedex/pokemon/${nombre}" style="text-decoration: none; color: inherit;">
+                    <div class="card shadow-sm hover-shadow">
+                        <div class="card-body text-center">
+                            <h2 class="text-link">${nombre.replace(/-/g, ' ')}</h2>
+                            <img class="pokemon-img-evo mb-3" src="${imagen}" alt="Forma alterna" />
+                        </div>
+                    </div>
+                </a>`;
+                            contenedor.appendChild(card);
+                        }
+                    }
+                }
+                if (hayFormasAlternas) {
+                    document.getElementById("seccion-formas-alternas").style.display = "block";
+                }
+            } catch (error) {
+                console.error("Error al cargar formas alternas:", error);
+            }
+        });
     </script>
 
     <style>
         .pokemon-img {
+            width: 300px;
+            height: 300px;
+            object-fit: contain;
+
+            color: transparent;
+            filter: drop-shadow(5px 15px 15px black);
+            transform: scaleY(1.05);
+            transform-origin: top;
+        }
+
+        .pokemon-img-evo {
             width: 300px;
             height: 300px;
             object-fit: contain;
@@ -228,6 +334,207 @@
             object-fit: contain;
         }
 
+        .pokemon-move-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pokemon-move {
+            border: 2px solid #555;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-family: 'Verdana', sans-serif;
+            box-shadow: 2px 2px 4px #aaa;
+            color: #333;
+        }
+
+        .move-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-bottom: 5px;
+        }
+
+        .move-type {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: white;
+        }
+
+        .move-name {
+            font-size: 1.1em;
+            text-shadow: 1px 1px 0 #fff;
+        }
+
+        .move-pp {
+            font-size: 0.9em;
+            color: #fff;
+        }
+
+        .move-details {
+            font-size: 0.9em;
+            text-align: right;
+        }
+
+        /* Tipos con sus colores */
+        .type-normal .move-header {
+            background-color: #C6C6A7;
+        }
+
+        .type-normal .move-type {
+            background-color: #A8A77A;
+        }
+
+        .type-fire .move-header {
+            background-color: #f55e3c;
+        }
+
+        .type-fire .move-type {
+            background-color: #eb2632;
+        }
+
+        .type-water .move-header {
+            background-color: #7ac7f3;
+        }
+
+        .type-water .move-type {
+            background-color: #6390F0;
+        }
+
+        .type-electric .move-header {
+            background-color: #ffe04e;
+        }
+
+        .type-electric .move-type {
+            background-color: #F7D02C;
+        }
+
+        .type-grass .move-header {
+            background-color: #80f872;
+        }
+
+        .type-grass .move-type {
+            background-color: #4ef037;
+        }
+
+        .type-ice .move-header {
+            background-color: #b4f0ec;
+        }
+
+        .type-ice .move-type {
+            background-color: #96D9D6;
+        }
+
+        .type-fighting .move-header {
+            background-color: #bf6342;
+        }
+
+        .type-fighting .move-type {
+            background-color: #8f4426;
+        }
+
+        .type-poison .move-header {
+            background-color: #f0c9ec;
+        }
+
+        .type-poison .move-type {
+            background-color: #d7acd4;
+        }
+
+        .type-ground .move-header {
+            background-color: #f1db90;
+        }
+
+        .type-ground .move-type {
+            background-color: #E2BF65;
+        }
+
+        .type-flying .move-header {
+            background-color: #9dc3f9;
+        }
+
+        .type-flying .move-type {
+            background-color: #A98FF3;
+        }
+
+        .type-psychic .move-header {
+            background-color: #fabdf4;
+        }
+
+        .type-psychic .move-type {
+            background-color: #e58cdb;
+        }
+
+        .type-bug .move-header {
+            background-color: #fcf183;
+        }
+
+        .type-bug .move-type {
+            background-color: #efd510;
+        }
+
+        .type-rock .move-header {
+            background-color: #d1b85e;
+        }
+
+        .type-rock .move-type {
+            background-color: #B6A136;
+        }
+
+        .type-ghost .move-header {
+            background-color: #8985f1;
+        }
+
+        .type-ghost .move-type {
+            background-color: #645fce;
+        }
+
+        .type-dragon .move-header {
+            background-color: #a177ff;
+        }
+
+        .type-dragon .move-type {
+            background-color: #6F35FC;
+        }
+
+        .type-dark .move-header {
+            background-color: #a07e69;
+        }
+
+        .type-dark .move-type {
+            background-color: #705746;
+        }
+
+        .type-steel .move-header {
+            background-color: #d1d1e4;
+        }
+
+        .type-steel .move-type {
+            background-color: #B7B7CE;
+        }
+
+        .type-fairy .move-header {
+            background-color: #f0acc9;
+        }
+
+        .type-fairy .move-type {
+            background-color: #D685AD;
+        }
+
+        .current-pokemon {
+            opacity: 0.6;
+            pointer-events: none;
+            /* Desactiva el click en el Pokémon actual */
+            border: 2px solid red;
+        }
+
         .type-badge {
             margin: 0 5px;
             text-transform: capitalize;
@@ -241,7 +548,7 @@
 
             color: transparent;
             font: 900 clamp(2em, 10vw, 10em) exo, sans-serif;
-            font-size: 250%;
+            font-size: 150%;
             animation: shimer 2s linear infinite;
         }
 
@@ -253,7 +560,7 @@
 
             color: transparent;
             font: 900 clamp(2em, 10vw, 10em) exo, sans-serif;
-            font-size: 250%;
+            font-size: 150%;
             animation: shimer 2s linear infinite;
         }
 

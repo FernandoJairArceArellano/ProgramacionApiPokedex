@@ -1,7 +1,6 @@
 package com.Digis01.FArceConsumoPokeAPI.DAO;
 
 import com.Digis01.FArceConsumoPokeAPI.ML.EvolutionChainResponse;
-import com.Digis01.FArceConsumoPokeAPI.ML.Form;
 import com.Digis01.FArceConsumoPokeAPI.ML.MoveData;
 import com.Digis01.FArceConsumoPokeAPI.ML.MoveSlot;
 import com.Digis01.FArceConsumoPokeAPI.ML.PokemonListResponse;
@@ -157,8 +156,8 @@ public class PokemonService {
             for (MoveSlot moveSlot : pokemon.getMoves()) {
                 try {
                     MoveData moveData = getMoveData(moveSlot.getMove().getName());
-                    moveSlot.setMoveData(moveData); // Vamos a crear este campo en MoveSlot
-                } catch (Exception e) {
+                    moveSlot.setMoveData(moveData);
+                } catch (Exception ex) {
                     // Si falla, no agregamos nada
                 }
             }

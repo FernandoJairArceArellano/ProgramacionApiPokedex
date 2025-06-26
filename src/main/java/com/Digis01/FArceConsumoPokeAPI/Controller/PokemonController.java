@@ -123,7 +123,7 @@ public class PokemonController {
         try {
             Pokemon detail = pokemonService.getPokemonDetail(id);
 
-            // Validaciones defensivas
+            // Validaciones para evitar errores
             if (detail.getSprites() != null && detail.getSprites().getOther() != null) {
                 if (detail.getSprites().getFrontDefault() != null) {
                     detail.getSprites().getFrontDefault();
@@ -142,24 +142,21 @@ public class PokemonController {
             }
 
             if (detail.getMoves() != null && !detail.getMoves().isEmpty()) {
-                detail.getMoves().get(0); // solo para asegurarse que hay uno
+                detail.getMoves().get(0);
             }
 
             model.addAttribute("pokemon", detail);
 
-            // Obtener nombre base (sin forma alterna)
             String baseName = detail.getName().split("-")[0];
 
-            // Validar si es el Pokémon base (is_default = true)
             if (detail.isIsDefault()) {
                 List<PokemonEvolucion> evoluciones = pokemonService.getEvoluciones(baseName);
                 model.addAttribute("evoluciones", evoluciones);
             } else {
-                model.addAttribute("evoluciones", new ArrayList<>()); // ← evita null en la vista
+                model.addAttribute("evoluciones", new ArrayList<>());
             }
 
-            // Puedes también preparar una lista de "megas" vacía si usas eso
-            model.addAttribute("megas", new ArrayList<>()); // ← opcional
+            model.addAttribute("megas", new ArrayList<>());
 
             result.correct = true;
             result.object = detail;
@@ -170,8 +167,8 @@ public class PokemonController {
             result.errorMessage = "Error al obtener detalles del Pokémon";
             model.addAttribute("error", result.errorMessage);
             model.addAttribute("exception", result.ex.getMessage());
-            ex.printStackTrace(); // para consola
-            return "error"; // ← asegúrate que exista "error.html"
+            ex.printStackTrace();
+            return "error";
         }
 
         return "detalle";

@@ -242,7 +242,7 @@
             <div th:each="pokemon : ${pokemons}" class="pokemon-card" th:attr="data-name=${pokemon.name}">
                 <div class="card h-100 w-80 shadow-sm text-center text-white border-secondary">
                     <div class="card-body flex">
-                        <img class="pokemon-img mb-1"
+                        <img class="pokemon-img"
                             th:src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + ${#strings.replace(pokemon.url, 'https://pokeapi.co/api/v2/pokemon/', '').replace('/', '')} + '.png'"
                             alt="Imagen de Pokémon">
                         <h5 class="card-title text-capitalize mt-1" th:text="${pokemon.name}">Nombre</h5>
@@ -278,7 +278,7 @@
             const botones = document.querySelectorAll('.gen-button');
             botones.forEach(b => b.classList.remove('active-gen'));
 
-            // Activar botón clicado y guardar datos
+            // Activar botón y guardar datos
             if (botonClicado) {
                 botonClicado.classList.add('active-gen');
                 const index = Array.from(botones).indexOf(botonClicado);
@@ -360,8 +360,6 @@
 
             function restaurarFiltroDefault() {
                 localStorage.removeItem("generacionSeleccionada");
-
-                // Obtener el botón Gen I (asumimos que es el primero)
                 const primerBoton = document.querySelectorAll(".gen-button")[0];
                 filtrarGeneracion(1, 151, primerBoton);
             }
